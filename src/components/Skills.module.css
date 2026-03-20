@@ -87,6 +87,8 @@
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .skillIconCenter {
@@ -168,11 +170,17 @@
 
     .skillCard {
         padding: 22px 12px 18px;
+        align-items: center;
+        text-align: center;
     }
 
     .skillRingWrapper {
         width: 76px;
         height: 76px;
+    }
+
+    .skillIconCenter {
+        font-size: 1.6rem;
     }
 }
 
@@ -180,5 +188,18 @@
     .skillsGrid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
+    }
+
+    .skillCard {
+        padding: 18px 8px 16px;
+    }
+
+    .skillRingWrapper {
+        width: 68px;
+        height: 68px;
+    }
+
+    .skillIconCenter {
+        font-size: 1.4rem;
     }
 }
