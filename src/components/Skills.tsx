@@ -55,7 +55,7 @@ function CircularProgress({ value, color, size = 80, strokeWidth = 4 }: {
     const offset = circumference - (value / 100) * circumference;
 
     return (
-        <svg width={size} height={size} className={styles.progressRing}>
+        <svg viewBox={`0 0 ${size} ${size}`} className={styles.progressRing}>
             <circle
                 cx={size / 2}
                 cy={size / 2}
