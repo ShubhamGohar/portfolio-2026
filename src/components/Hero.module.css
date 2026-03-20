@@ -1,0 +1,360 @@
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: 80px;
+}
+
+/* Background orbs */
+.bgOrbs {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    animation: float 20s ease-in-out infinite;
+}
+
+.orb1 {
+    width: 500px;
+    height: 500px;
+    background: rgba(124, 58, 237, 0.15);
+    top: -10%;
+    right: -5%;
+    animation-delay: 0s;
+}
+
+.orb2 {
+    width: 400px;
+    height: 400px;
+    background: rgba(59, 130, 246, 0.12);
+    bottom: -10%;
+    left: -5%;
+    animation-delay: -7s;
+}
+
+.orb3 {
+    width: 300px;
+    height: 300px;
+    background: rgba(236, 72, 153, 0.08);
+    top: 40%;
+    left: 30%;
+    animation-delay: -14s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(30px, -30px) scale(1.05);
+    }
+
+    50% {
+        transform: translate(-20px, 20px) scale(0.95);
+    }
+
+    75% {
+        transform: translate(15px, 15px) scale(1.02);
+    }
+}
+
+.gridOverlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+}
+
+/* Hero layout */
+.heroContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 80px;
+    position: relative;
+    z-index: 1;
+}
+
+.heroContent {
+    flex: 1;
+    max-width: 600px;
+}
+
+.greeting {
+    display: inline-block;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.name {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.roleWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+}
+
+.roleLabel {
+    color: var(--text-secondary);
+}
+
+.roleText {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 36px;
+    max-width: 500px;
+}
+
+.heroCta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* Hero visual / profile */
+.heroVisual {
+    flex-shrink: 0;
+}
+
+.profileFrame {
+    position: relative;
+    width: 380px;
+    height: 380px;
+}
+
+.profileGlow {
+    position: absolute;
+    inset: -20px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(40px);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.15;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.25;
+        transform: scale(1.05);
+    }
+}
+
+.profileImageWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.profilePlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-gradient);
+    opacity: 0.8;
+}
+
+.profilePlaceholder span {
+    font-size: 8rem;
+    font-weight: 900;
+    color: white;
+    font-family: var(--font-heading);
+}
+
+.profileImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.floatingBadge {
+    position: absolute;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 12px 20px;
+    backdrop-filter: blur(10px);
+    animation: badgeFloat 3s ease-in-out infinite;
+}
+
+.floatingBadge span {
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@keyframes badgeFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Scroll indicator */
+.scrollIndicator {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 1;
+}
+
+.scrollIndicator span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.scrollMouse {
+    width: 24px;
+    height: 38px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+.scrollDot {
+    width: 4px;
+    height: 8px;
+    background: var(--accent-primary);
+    border-radius: var(--radius-full);
+    animation: scrollDown 2s ease-in-out infinite;
+}
+
+@keyframes scrollDown {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: translateY(8px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .heroContainer {
+        flex-direction: column;
+        text-align: center;
+        gap: 48px;
+    }
+
+    .heroContent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .roleWrapper {
+        justify-content: center;
+    }
+
+    .tagline {
+        text-align: center;
+    }
+
+    .heroCta {
+        justify-content: center;
+    }
+
+    .profileFrame {
+        width: 280px;
+        height: 280px;
+    }
+
+    .profilePlaceholder span {
+        font-size: 6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .heroCta {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .heroCta a {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .profileFrame {
+        width: 220px;
+        height: 220px;
+    }
+
+    .floatingBadge {
+        padding: 8px 14px;
+    }
+
+    .floatingBadge span {
+        font-size: 0.75rem;
+    }
+}

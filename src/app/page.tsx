@@ -1,66 +1,108 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import About from '@/components/About';
+import Stats from '@/components/Stats';
+import Services from '@/components/Services';
+import Projects from '@/components/Projects';
+import Skills from '@/components/Skills';
+import ExperienceSection from '@/components/ExperienceSection';
+import Testimonials from '@/components/Testimonials';
+import Contact from '@/components/Contact';
+import Footer from '@/components/Footer';
 
-export default function Home() {
+import {
+  sanityClient,
+  heroQuery, aboutQuery, statsQuery, servicesQuery,
+  projectsQuery, skillsQuery, experienceQuery, testimonialsQuery, contactQuery,
+  siteSettingsQuery,
+} from '@/lib/sanity';
+
+import {
+  fallbackHero,
+  fallbackAbout,
+  fallbackStats,
+  fallbackServices,
+  fallbackProjects,
+  fallbackSkills,
+  fallbackExperience,
+  fallbackTestimonials,
+  fallbackContact,
+} from '@/lib/data';
+
+export const revalidate = 60; // ISR: revalidate every 60 seconds
+
+const isSanityConfigured = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== 'demo';
+
+async function getData() {
+  if (isSanityConfigured) {
+    try {
+      const [hero, about, stats, services, projects, skills, experience, testimonials, contact, siteSettings] =
+        await Promise.all([
+          sanityClient.fetch(heroQuery),
+          sanityClient.fetch(aboutQuery),
+          sanityClient.fetch(statsQuery),
+          sanityClient.fetch(servicesQuery),
+          sanityClient.fetch(projectsQuery),
+          sanityClient.fetch(skillsQuery),
+          sanityClient.fetch(experienceQuery),
+          sanityClient.fetch(testimonialsQuery),
+          sanityClient.fetch(contactQuery),
+          sanityClient.fetch(siteSettingsQuery),
+        ]);
+
+      return {
+        hero: hero || fallbackHero,
+        about: about ? {
+          heading: about.heading || fallbackAbout.heading,
+          description: about.description || fallbackAbout.description,
+          cards: about.cards?.length ? about.cards : fallbackAbout.cards,
+        } : fallbackAbout,
+        stats: stats?.items?.length ? stats : fallbackStats,
+        services: services?.length ? services : fallbackServices,
+        projects: projects?.length ? projects : fallbackProjects,
+        skills: skills?.length ? skills : fallbackSkills,
+        experience: experience?.length ? experience : fallbackExperience,
+        testimonials: testimonials?.length ? testimonials : fallbackTestimonials,
+        contact: contact || fallbackContact,
+        logoUrl: siteSettings?.logoUrl || null,
+      };
+    } catch (err) {
+      console.error('Failed to fetch from Sanity, using fallback data:', err);
+    }
+  }
+
+  return {
+    hero: fallbackHero,
+    about: fallbackAbout,
+    stats: fallbackStats,
+    services: fallbackServices,
+    projects: fallbackProjects,
+    skills: fallbackSkills,
+    experience: fallbackExperience,
+    testimonials: fallbackTestimonials,
+    contact: fallbackContact,
+    logoUrl: null,
+  };
+}
+
+export default async function Home() {
+  const data = await getData();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Navbar logoUrl={data.logoUrl} />
+      <main>
+        <Hero data={data.hero} />
+        <About data={data.about} />
+        <Stats data={data.stats} />
+        <Services data={data.services} />
+        <Projects data={data.projects} />
+        <Skills data={data.skills} />
+        <ExperienceSection data={data.experience} />
+        <Testimonials data={data.testimonials} />
+        <Contact data={data.contact} />
       </main>
-    </div>
+      <Footer contactData={data.contact} logoUrl={data.logoUrl} />
+    </>
   );
 }
