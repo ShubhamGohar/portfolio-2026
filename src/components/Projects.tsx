@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiExternalLink, HiCode } from 'react-icons/hi';
 import { Project } from '@/lib/types';
+import { urlFor } from '@/lib/sanity';
 import styles from './Projects.module.css';
 
 interface ProjectsProps {
@@ -66,9 +68,19 @@ export default function Projects({ data }: ProjectsProps) {
                                 transition={{ delay: i * 0.05, duration: 0.4 }}
                             >
                                 <div className={styles.projectImageWrapper}>
-                                    <div className={styles.projectImagePlaceholder}>
-                                        <span>{project.title.charAt(0)}</span>
-                                    </div>
+                                    {project.image ? (
+                                        <Image
+                                            src={urlFor(project.image).width(680).height(440).url()}
+                                            alt={project.title}
+                                            fill
+                                            className={styles.projectImage}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        />
+                                    ) : (
+                                        <div className={styles.projectImagePlaceholder}>
+                                            <span>{project.title.charAt(0)}</span>
+                                        </div>
+                                    )}
                                     <div className={styles.projectOverlay}>
                                         {project.projectUrl && (
                                             <a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
