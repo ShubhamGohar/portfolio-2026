@@ -35,12 +35,7 @@ export default function Footer({ contactData, logoUrl }: FooterProps) {
                 <div className={styles.footerContent}>
                     <div className={styles.footerLeft}>
                         <div className={styles.footerLogo}>
-                            {logoUrl ? (
-                                <img src={logoUrl} alt="Logo" className={styles.logoImg} />
-                            ) : (
-                                <span className={styles.logoIcon}>S</span>
-                            )}
-                            <span className={styles.logoText}>Shubham Gohar</span>
+                            <img src="/logo-white.webp" alt="Shubham Gohar" className={styles.logoImg} />
                         </div>
                         <p className={styles.footerDescription}>
                             Frontend Engineer crafting beautiful, performant web experiences.
