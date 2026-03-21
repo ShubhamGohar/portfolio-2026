@@ -77,7 +77,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                     ) : (
                         <span className={styles.logoIcon}>S</span>
                     )}
-                    <span className={styles.logoText}>Shubham</span>
+                    {/* <span className={styles.logoText}>Shubham Gohar</span> */}
                 </a>
 
                 {/* Desktop Nav */}
