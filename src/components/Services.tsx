@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { HiGlobeAlt, HiColorSwatch, HiLightningBolt, HiDatabase } from 'react-icons/hi';
+import { HiGlobeAlt, HiColorSwatch, HiLightningBolt, HiDatabase, HiDeviceMobile, HiCode } from 'react-icons/hi';
 import { Service } from '@/lib/types';
 import styles from './Services.module.css';
 
@@ -10,6 +10,8 @@ const iconMap: Record<string, React.ReactNode> = {
     design: <HiColorSwatch size={32} />,
     speed: <HiLightningBolt size={32} />,
     cms: <HiDatabase size={32} />,
+    mobile: <HiDeviceMobile size={32} />,
+    api: <HiCode size={32} />,
 };
 
 interface ServicesProps {
