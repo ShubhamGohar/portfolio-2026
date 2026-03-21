@@ -72,12 +72,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
         >
             <div className={`container ${styles.navContainer}`}>
                 <a href="#home" className={styles.logo} onClick={(e) => handleNavClick(e, '#home')}>
-                    {logoUrl ? (
-                        <img src={logoUrl} alt="Logo" className={styles.logoImg} />
-                    ) : (
-                        <span className={styles.logoIcon}>S</span>
-                    )}
-                    {/* <span className={styles.logoText}>Shubham Gohar</span> */}
+                    <img src="/logo-white.webp" alt="Shubham Gohar" className={styles.logoImg} />
                 </a>
 
                 {/* Desktop Nav */}

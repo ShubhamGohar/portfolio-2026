@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "Next.js Developer", "TypeScript", "Portfolio", "Web Developer", "UI/UX",
     ],
     authors: [{ name: "Shubham Gohar" }],
-    icons: faviconUrl ? { icon: faviconUrl } : undefined,
+    icons: { icon: '/logo-white.webp' },
     openGraph: {
       title: siteTitle,
       description: siteDescription,
