@@ -1,10 +1,13 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { HiArrowUp } from 'react-icons/hi';
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaHeart } from 'react-icons/fa';
 import { ContactData } from '@/lib/types';
 import styles from './Footer.module.css';
+
+const LOGO_SRC = '/logo-white.webp';
 
 const socialIcons: Record<string, React.ReactNode> = {
     linkedin: <FaLinkedin size={18} />,
@@ -35,7 +38,13 @@ export default function Footer({ contactData, logoUrl }: FooterProps) {
                 <div className={styles.footerContent}>
                     <div className={styles.footerLeft}>
                         <div className={styles.footerLogo}>
-                            <img src="/logo-white.webp" alt="Shubham Gohar" className={styles.logoImg} />
+                            <Image
+                                src={logoUrl || LOGO_SRC}
+                                alt="Shubham Gohar"
+                                width={36}
+                                height={36}
+                                className={styles.logoImg}
+                            />
                         </div>
                         <p className={styles.footerDescription}>
                             Frontend Engineer crafting beautiful, performant web experiences.

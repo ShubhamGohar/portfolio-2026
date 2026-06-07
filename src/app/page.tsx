@@ -1,14 +1,8 @@
+import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Stats from '@/components/Stats';
-import Services from '@/components/Services';
-import Projects from '@/components/Projects';
-import Skills from '@/components/Skills';
-import ExperienceSection from '@/components/ExperienceSection';
-import Testimonials from '@/components/Testimonials';
-import Contact from '@/components/Contact';
-import Footer from '@/components/Footer';
 
 import {
   sanityClient,
@@ -28,6 +22,15 @@ import {
   fallbackTestimonials,
   fallbackContact,
 } from '@/lib/data';
+
+// Below-fold sections: code-split to reduce initial JS bundle
+const Services = dynamic(() => import('@/components/Services'));
+const Projects = dynamic(() => import('@/components/Projects'));
+const Skills = dynamic(() => import('@/components/Skills'));
+const ExperienceSection = dynamic(() => import('@/components/ExperienceSection'));
+const Testimonials = dynamic(() => import('@/components/Testimonials'));
+const Contact = dynamic(() => import('@/components/Contact'));
+const Footer = dynamic(() => import('@/components/Footer'));
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 

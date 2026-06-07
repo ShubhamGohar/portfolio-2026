@@ -2,8 +2,6 @@
    PORTFOLIO — GLOBAL DESIGN SYSTEM
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
 /* ========== CSS Custom Properties ========== */
 :root {
   /* Colors */
@@ -37,9 +35,9 @@
   --shadow-glow: 0 0 20px rgba(124, 58, 237, 0.3);
   --shadow-glow-blue: 0 0 20px rgba(59, 130, 246, 0.3);
   
-  /* Typography */
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+  /* Typography (loaded via next/font in layout.tsx) */
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: var(--font-space-grotesk), var(--font-inter), sans-serif;
   
   /* Spacing */
   --section-padding: 100px 0;

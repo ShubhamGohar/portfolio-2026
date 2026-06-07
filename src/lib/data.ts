@@ -2,11 +2,16 @@ import { HeroData, AboutData, Project, Skill, Experience, Testimonial, ContactDa
 
 // ============ Fallback Data (used when CMS is not configured) ============
 
+/** Hero profile photo from production Sanity CDN — keeps local dev visually in sync. */
+export const fallbackProfileImageUrl =
+    'https://cdn.sanity.io/images/r0a7p3kp/production/2f226e8a4ac722eaecc400d0050c0598ea562e42-500x500.webp?w=500&h=500&fm=webp&q=80';
+
 export const fallbackHero: HeroData = {
     name: 'Shubham Gohar',
     tagline: 'I build things for the web.',
     roles: ['Frontend Engineer', 'React Developer', 'UI/UX Enthusiast', 'Freelancer'],
     resumeURL: '#',
+    badges: ['8+ Years', '50+ Projects'],
 };
 
 export const fallbackAbout: AboutData = {

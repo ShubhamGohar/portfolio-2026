@@ -1,9 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenu, HiX } from 'react-icons/hi';
 import styles from './Navbar.module.css';
+
+const LOGO_SRC = '/logo-white.webp';
 
 const navLinks = [
     { name: 'Home', href: '#home' },
@@ -72,7 +75,14 @@ export default function Navbar({ logoUrl }: NavbarProps) {
         >
             <div className={`container ${styles.navContainer}`}>
                 <a href="#home" className={styles.logo} onClick={(e) => handleNavClick(e, '#home')}>
-                    <img src="/logo-white.webp" alt="Shubham Gohar" className={styles.logoImg} />
+                    <Image
+                        src={logoUrl || LOGO_SRC}
+                        alt="Shubham Gohar"
+                        width={38}
+                        height={38}
+                        className={styles.logoImg}
+                        priority
+                    />
                 </a>
 
                 {/* Desktop Nav */}

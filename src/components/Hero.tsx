@@ -1,10 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import { HiDownload, HiArrowRight } from 'react-icons/hi';
 import { HeroData } from '@/lib/types';
-import { urlFor } from '@/lib/sanity';
+import { optimizedImageUrl } from '@/lib/sanity';
+import { fallbackProfileImageUrl } from '@/lib/data';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -109,17 +111,19 @@ export default function Hero({ data }: HeroProps) {
                     <div className={styles.profileFrame}>
                         <div className={styles.profileGlow} />
                         <div className={styles.profileImageWrapper}>
-                            {data.profileImage?.asset ? (
-                                <img
-                                    src={urlFor(data.profileImage).width(500).height(500).url()}
-                                    alt={data.name}
-                                    className={styles.profileImage}
-                                />
-                            ) : (
-                                <div className={styles.profilePlaceholder}>
-                                    <span>{data.name.charAt(0)}</span>
-                                </div>
-                            )}
+                            <Image
+                                src={
+                                    data.profileImage?.asset
+                                        ? optimizedImageUrl(data.profileImage, 500, 500)
+                                        : fallbackProfileImageUrl
+                                }
+                                alt={data.name}
+                                fill
+                                priority
+                                fetchPriority="high"
+                                sizes="(max-width: 768px) 280px, 500px"
+                                className={styles.profileImage}
+                            />
                         </div>
                         {(data.badges || ['7+ Years', '50+ Projects']).map((badge, i) => {
                             const positions = [

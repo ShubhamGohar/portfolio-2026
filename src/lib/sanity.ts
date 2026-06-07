@@ -17,6 +17,18 @@ export function urlFor(source: SanityImageSource) {
   return builder.image(source);
 }
 
+/** Sanity CDN URL optimized for web delivery (WebP, quality-capped). */
+export function optimizedImageUrl(
+  source: SanityImageSource,
+  width: number,
+  height?: number,
+  quality = 80,
+) {
+  let image = urlFor(source).width(width).format('webp').quality(quality);
+  if (height) image = image.height(height);
+  return image.url();
+}
+
 // ============ GROQ Queries ============
 
 export const heroQuery = `*[_type == "hero"][0]{
