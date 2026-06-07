@@ -83,12 +83,24 @@ export default function Projects({ data }: ProjectsProps) {
                                     )}
                                     <div className={styles.projectOverlay}>
                                         {project.projectUrl && (
-                                            <a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
+                                            <a
+                                                href={project.projectUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={styles.projectLink}
+                                                aria-label={`View live site: ${project.title}`}
+                                            >
                                                 <HiExternalLink size={20} />
                                             </a>
                                         )}
                                         {project.codeUrl && (
-                                            <a href={project.codeUrl} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
+                                            <a
+                                                href={project.codeUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={styles.projectLink}
+                                                aria-label={`View source code: ${project.title}`}
+                                            >
                                                 <HiCode size={20} />
                                             </a>
                                         )}

@@ -19,7 +19,7 @@ interface ContactProps {
 }
 
 export default function Contact({ data }: ContactProps) {
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', message: '', website: '' });
     const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -42,7 +42,7 @@ export default function Contact({ data }: ContactProps) {
             }
 
             setStatus('sent');
-            setFormData({ name: '', email: '', message: '' });
+            setFormData({ name: '', email: '', message: '', website: '' });
             setTimeout(() => setStatus('idle'), 4000);
         } catch (err) {
             setStatus('error');
@@ -160,6 +160,20 @@ export default function Contact({ data }: ContactProps) {
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 placeholder="your@email.com"
                                 required
+                            />
+                        </div>
+
+                        {/* Honeypot — hidden from users, traps bots */}
+                        <div className={styles.honeypot} aria-hidden="true">
+                            <label htmlFor="website">Website</label>
+                            <input
+                                id="website"
+                                type="text"
+                                name="website"
+                                tabIndex={-1}
+                                autoComplete="off"
+                                value={formData.website}
+                                onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                             />
                         </div>
 
