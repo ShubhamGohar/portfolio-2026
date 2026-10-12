@@ -1,8 +1,5 @@
-import Image from 'next/image';
-import { HiDownload, HiArrowRight } from 'react-icons/hi';
 import { HeroData } from '@/lib/types';
 import { fallbackProfileImageUrl } from '@/lib/data';
-import HeroRoles from './HeroRoles';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -12,6 +9,7 @@ interface HeroProps {
 
 export default function Hero({ data, profileImageUrl }: HeroProps) {
     const imageSrc = profileImageUrl || fallbackProfileImageUrl;
+    const firstRole = data.roles[0] ?? '';
 
     return (
         <section id="home" className={styles.hero}>
@@ -38,7 +36,7 @@ export default function Hero({ data, profileImageUrl }: HeroProps) {
 
                     <div className={styles.roleWrapper}>
                         <span className={styles.roleLabel}>I&apos;m a </span>
-                        <HeroRoles roles={data.roles} className={styles.roleText} />
+                        <span className={styles.roleText}>{firstRole}</span>
                     </div>
 
                     <p className={styles.tagline}>
@@ -48,13 +46,17 @@ export default function Hero({ data, profileImageUrl }: HeroProps) {
                     <div className={styles.heroCta}>
                         {data.resumeURL && (
                             <a href={data.resumeURL} className="btn btn--primary" target="_blank" rel="noopener noreferrer">
-                                <HiDownload size={18} />
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                                    <path d="M5 20h14v-2H5v2Zm7-18-5.5 5.5 1.42 1.42L11 6.84V16h2V6.84l3.08 3.08 1.42-1.42L12 2Z" />
+                                </svg>
                                 Download CV
                             </a>
                         )}
                         <a href="#contact" className="btn btn--outline">
                             Let&apos;s Talk
-                            <HiArrowRight size={18} />
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                            </svg>
                         </a>
                     </div>
                 </div>
@@ -63,13 +65,15 @@ export default function Hero({ data, profileImageUrl }: HeroProps) {
                     <div className={styles.profileFrame}>
                         <div className={styles.profileGlow} />
                         <div className={styles.profileImageWrapper}>
-                            <Image
+                            {/* Sanity CDN URL is already sized WebP — skip the /_next/image hop on LCP. */}
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
                                 src={imageSrc}
                                 alt={data.name}
-                                fill
+                                width={500}
+                                height={500}
                                 fetchPriority="high"
-                                loading="eager"
-                                sizes="(max-width: 768px) 280px, 500px"
+                                decoding="async"
                                 className={styles.profileImage}
                             />
                         </div>
@@ -87,13 +91,6 @@ export default function Hero({ data, profileImageUrl }: HeroProps) {
                         })}
                     </div>
                 </div>
-            </div>
-
-            <div className={styles.scrollIndicator}>
-                <div className={styles.scrollMouse}>
-                    <div className={styles.scrollDot} />
-                </div>
-                <span>Scroll Down</span>
             </div>
         </section>
     );

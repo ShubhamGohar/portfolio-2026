@@ -1,8 +1,3 @@
-'use client';
-
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { HiArrowUp } from 'react-icons/hi';
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaHeart } from 'react-icons/fa';
 import { ContactData } from '@/lib/types';
 import styles from './Footer.module.css';
@@ -22,10 +17,6 @@ interface FooterProps {
 }
 
 export default function Footer({ contactData, logoUrl }: FooterProps) {
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
     const socials = contactData?.socials || [
         { platform: 'linkedin', url: 'https://linkedin.com/in/shubhamgohar' },
         { platform: 'github', url: 'https://github.com/shubhamgohar' },
@@ -38,7 +29,8 @@ export default function Footer({ contactData, logoUrl }: FooterProps) {
                 <div className={styles.footerContent}>
                     <div className={styles.footerLeft}>
                         <div className={styles.footerLogo}>
-                            <Image
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
                                 src={logoUrl || LOGO_SRC}
                                 alt="Shubham Gohar"
                                 width={36}
@@ -53,10 +45,10 @@ export default function Footer({ contactData, logoUrl }: FooterProps) {
 
                     <div className={styles.footerLinks}>
                         <h4 className={styles.footerHeading}>Quick Links</h4>
-                        <a href="#about" onClick={(e) => { e.preventDefault(); document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' }); }}>About</a>
-                        <a href="#projects" onClick={(e) => { e.preventDefault(); document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' }); }}>Projects</a>
-                        <a href="#skills" onClick={(e) => { e.preventDefault(); document.querySelector('#skills')?.scrollIntoView({ behavior: 'smooth' }); }}>Skills</a>
-                        <a href="#contact" onClick={(e) => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }); }}>Contact</a>
+                        <a href="#about">About</a>
+                        <a href="#projects">Projects</a>
+                        <a href="#skills">Skills</a>
+                        <a href="#contact">Contact</a>
                     </div>
 
                     <div className={styles.footerSocials}>
@@ -81,15 +73,9 @@ export default function Footer({ contactData, logoUrl }: FooterProps) {
                     <p className={styles.copyright}>
                         © {new Date().getFullYear()} Shubham Gohar. Made with <FaHeart className={styles.heart} size={12} /> All rights reserved.
                     </p>
-                    <motion.button
-                        className={styles.backToTop}
-                        onClick={scrollToTop}
-                        whileHover={{ y: -4 }}
-                        whileTap={{ scale: 0.95 }}
-                        aria-label="Back to top"
-                    >
-                        <HiArrowUp size={18} />
-                    </motion.button>
+                    <a href="#home" className={styles.backToTop} aria-label="Back to top">
+                        ↑
+                    </a>
                 </div>
             </div>
         </footer>

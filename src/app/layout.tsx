@@ -1,21 +1,18 @@
-import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import JsonLd from "@/components/JsonLd";
 import { getSiteSettings } from "@/lib/get-site-settings";
 import { OG_IMAGE_URL, SITE_NAME, SITE_URL } from "@/lib/site";
 
+export const viewport: Viewport = {
+  themeColor: "#0a0a0f",
+  colorScheme: "dark",
+};
+
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -67,8 +64,8 @@ export default async function RootLayout({
   const { siteTitle, siteDescription } = await getSiteSettings();
 
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
-      <body>
+    <html lang="en" className={inter.variable} style={{ background: "#0a0a0f", colorScheme: "dark" }}>
+      <body style={{ background: "#0a0a0f", color: "#f0f0f5" }}>
         <JsonLd title={siteTitle} description={siteDescription} />
         {/* Background effects */}
         <div className="bg-grid" />

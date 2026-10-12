@@ -37,7 +37,7 @@
   
   /* Typography (loaded via next/font in layout.tsx) */
   --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  --font-heading: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
   
   /* Spacing */
   --section-padding: 100px 0;
@@ -70,6 +70,8 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
+  background: #0a0a0f;
+  color-scheme: dark;
 }
 
 body {
@@ -277,6 +279,22 @@ img {
   :root {
     --section-padding: 60px 0;
     --container-padding: 0 16px;
+  }
+
+  .bg-gradient-blur {
+    width: 280px;
+    height: 280px;
+    filter: blur(60px);
+    opacity: 0.1;
+  }
+
+  .glass-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .glass-card:hover {
+    transform: none;
   }
   
   .section__header {

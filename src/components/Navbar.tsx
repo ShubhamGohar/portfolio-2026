@@ -1,9 +1,3 @@
-'use client';
-
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { HiMenu, HiX } from 'react-icons/hi';
 import styles from './Navbar.module.css';
 
 const LOGO_SRC = '/logo-white.webp';
@@ -19,59 +13,15 @@ const navLinks = [
     { name: 'Contact', href: '#contact' },
 ];
 
-interface NavbarProps {
-    logoUrl?: string;
-}
-
-export default function Navbar({ logoUrl }: NavbarProps) {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState('home');
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
-
-        const observerOptions = {
-            rootMargin: '-80px 0px -50% 0px',
-            threshold: 0,
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setActiveSection(entry.target.id);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('section[id]').forEach((section) => {
-            observer.observe(section);
-        });
-
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            observer.disconnect();
-        };
-    }, []);
-
-    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-            setIsMobileOpen(false);
-        }
-    };
-
+export default function Navbar() {
     return (
-        <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
+        <nav className={styles.navbar}>
             <div className={`container ${styles.navContainer}`}>
-                <a href="#home" className={styles.logo} onClick={(e) => handleNavClick(e, '#home')}>
-                    <Image
-                        src={logoUrl || LOGO_SRC}
+                <a href="#home" className={styles.logo}>
+                    {/* Local file — avoid next/image optimizer competing with LCP. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={LOGO_SRC}
                         alt="Shubham Gohar"
                         width={38}
                         height={38}
@@ -79,59 +29,32 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                     />
                 </a>
 
-                {/* Desktop Nav */}
                 <div className={styles.navLinks}>
                     {navLinks.map((link) => (
-                        <a
-                            key={link.name}
-                            href={link.href}
-                            className={`${styles.navLink} ${activeSection === link.href.slice(1) ? styles.active : ''}`}
-                            onClick={(e) => handleNavClick(e, link.href)}
-                        >
+                        <a key={link.name} href={link.href} className={styles.navLink}>
                             {link.name}
-                            {activeSection === link.href.slice(1) && (
-                                <motion.span className={styles.activeIndicator} layoutId="activeIndicator" />
-                            )}
                         </a>
                     ))}
                 </div>
 
-                {/* Mobile Toggle */}
-                <button
-                    className={styles.mobileToggle}
-                    onClick={() => setIsMobileOpen(!isMobileOpen)}
-                    aria-label="Toggle navigation"
-                >
-                    {isMobileOpen ? <HiX size={24} /> : <HiMenu size={24} />}
-                </button>
-            </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isMobileOpen && (
-                    <motion.div
-                        className={styles.mobileMenu}
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        {navLinks.map((link, i) => (
-                            <motion.a
-                                key={link.name}
-                                href={link.href}
-                                className={`${styles.mobileLink} ${activeSection === link.href.slice(1) ? styles.active : ''}`}
-                                onClick={(e) => handleNavClick(e, link.href)}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: i * 0.05 }}
-                            >
+                <details className={styles.mobileNav}>
+                    <summary className={styles.mobileToggle} aria-label="Toggle navigation">
+                        <svg className={styles.iconOpen} width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                            <path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z" />
+                        </svg>
+                        <svg className={styles.iconClose} width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                            <path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4Z" />
+                        </svg>
+                    </summary>
+                    <div className={styles.mobileMenu}>
+                        {navLinks.map((link) => (
+                            <a key={link.name} href={link.href} className={styles.mobileLink}>
                                 {link.name}
-                            </motion.a>
+                            </a>
                         ))}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    </div>
+                </details>
+            </div>
         </nav>
     );
 }

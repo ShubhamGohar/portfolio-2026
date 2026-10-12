@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { HiGlobeAlt, HiColorSwatch, HiLightningBolt, HiDatabase, HiDeviceMobile, HiCode } from 'react-icons/hi';
 import { Service } from '@/lib/types';
 import styles from './Services.module.css';
@@ -22,31 +19,17 @@ export default function Services({ data }: ServicesProps) {
     return (
         <section id="services" className="section">
             <div className="container">
-                <motion.div
-                    className="section__header"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-100px' }}
-                    transition={{ duration: 0.6 }}
-                >
+                <div className="section__header">
                     <span className="section__subtitle">What I Do</span>
                     <h2 className="section__title">Services I Offer</h2>
                     <p className="section__description">
                         From concept to deployment, I provide end-to-end frontend solutions
                     </p>
-                </motion.div>
+                </div>
 
                 <div className={styles.servicesGrid}>
-                    {data.map((service, i) => (
-                        <motion.div
-                            key={service._id}
-                            className={`glass-card ${styles.serviceCard}`}
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: '-50px' }}
-                            transition={{ delay: i * 0.1, duration: 0.5 }}
-                            whileHover={{ y: -8 }}
-                        >
+                    {data.map((service) => (
+                        <div key={service._id} className={`glass-card ${styles.serviceCard}`}>
                             <div className={styles.serviceIcon}>
                                 {iconMap[service.icon] || <HiGlobeAlt size={32} />}
                             </div>
@@ -60,7 +43,7 @@ export default function Services({ data }: ServicesProps) {
                                     </li>
                                 ))}
                             </ul>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>

@@ -1,8 +1,14 @@
-import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Stats from '@/components/Stats';
+import Services from '@/components/Services';
+import Projects from '@/components/Projects';
+import Skills from '@/components/Skills';
+import ExperienceSection from '@/components/ExperienceSection';
+import Testimonials from '@/components/Testimonials';
+import Contact from '@/components/Contact';
+import Footer from '@/components/Footer';
 
 import {
   sanityClient,
@@ -24,18 +30,9 @@ import {
   fallbackContact,
   fallbackProfileImageUrl,
 } from '@/lib/data';
-import type { HeroData } from '@/lib/types';
+import type { HeroData, Project } from '@/lib/types';
 
-// Below-fold sections: code-split to reduce initial JS bundle
-const Services = dynamic(() => import('@/components/Services'));
-const Projects = dynamic(() => import('@/components/Projects'));
-const Skills = dynamic(() => import('@/components/Skills'));
-const ExperienceSection = dynamic(() => import('@/components/ExperienceSection'));
-const Testimonials = dynamic(() => import('@/components/Testimonials'));
-const Contact = dynamic(() => import('@/components/Contact'));
-const Footer = dynamic(() => import('@/components/Footer'));
-
-export const revalidate = 60; // ISR: revalidate every 60 seconds
+export const revalidate = 60;
 
 const isSanityConfigured = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== 'demo';
 
@@ -43,6 +40,15 @@ function resolveProfileImageUrl(hero: HeroData) {
   return hero.profileImage?.asset
     ? optimizedImageUrl(hero.profileImage, 500, 500)
     : fallbackProfileImageUrl;
+}
+
+function withProjectImageUrls(projects: Project[]): Project[] {
+  return projects.map((project) => ({
+    ...project,
+    imageUrl: project.image
+      ? optimizedImageUrl(project.image, 680, 440)
+      : project.imageUrl,
+  }));
 }
 
 async function getData() {
@@ -74,7 +80,7 @@ async function getData() {
         } : fallbackAbout,
         stats: stats?.items?.length ? stats : fallbackStats,
         services: services?.length ? services : fallbackServices,
-        projects: projects?.length ? projects : fallbackProjects,
+        projects: withProjectImageUrls(projects?.length ? projects : fallbackProjects),
         skills: skills?.length ? skills : fallbackSkills,
         experience: experience?.length ? experience : fallbackExperience,
         testimonials: testimonials?.length ? testimonials : fallbackTestimonials,
@@ -106,7 +112,7 @@ export default async function Home() {
 
   return (
     <>
-      <Navbar logoUrl={data.logoUrl} />
+      <Navbar />
       <main>
         <Hero data={data.hero} profileImageUrl={data.profileImageUrl} />
         <About data={data.about} />
