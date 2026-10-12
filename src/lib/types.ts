@@ -35,6 +35,7 @@ export interface Project {
     description: string;
     category: string;
     image?: SanityImage;
+    imageUrl?: string;
     projectUrl?: string;
     codeUrl?: string;
     tags: string[];

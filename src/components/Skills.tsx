@@ -1,7 +1,3 @@
-'use client';
-
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Skill } from '@/lib/types';
 import {
     SiReact, SiNextdotjs, SiTypescript, SiJavascript, SiHtml5, SiCss,
@@ -24,7 +20,6 @@ const iconMap: Record<string, React.ReactNode> = {
     redux: <SiRedux />,
 };
 
-// Brand colors for each tech
 const brandColors: Record<string, string> = {
     react: '#61DAFB',
     nextjs: '#ffffff',
@@ -64,7 +59,7 @@ function CircularProgress({ value, color, size = 80, strokeWidth = 4 }: {
                 stroke="rgba(255,255,255,0.06)"
                 strokeWidth={strokeWidth}
             />
-            <motion.circle
+            <circle
                 cx={size / 2}
                 cy={size / 2}
                 r={radius}
@@ -73,10 +68,7 @@ function CircularProgress({ value, color, size = 80, strokeWidth = 4 }: {
                 strokeWidth={strokeWidth}
                 strokeLinecap="round"
                 strokeDasharray={circumference}
-                initial={{ strokeDashoffset: circumference }}
-                whileInView={{ strokeDashoffset: offset }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
+                strokeDashoffset={offset}
                 style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
             />
         </svg>
@@ -84,88 +76,38 @@ function CircularProgress({ value, color, size = 80, strokeWidth = 4 }: {
 }
 
 export default function Skills({ data }: SkillsProps) {
-    const categories = ['All', ...Array.from(new Set(data.map(s => s.category)))];
-    const [activeCategory, setActiveCategory] = useState('All');
-
-    const filtered = activeCategory === 'All' ? data : data.filter(s => s.category === activeCategory);
-
     return (
         <section id="skills" className="section">
             <div className="container">
-                <motion.div
-                    className="section__header"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-100px' }}
-                    transition={{ duration: 0.6 }}
-                >
+                <div className="section__header">
                     <span className="section__subtitle">My Skills</span>
                     <h2 className="section__title">Skills & Technologies</h2>
                     <p className="section__description">
                         Technologies I work with to bring ideas to life
                     </p>
-                </motion.div>
+                </div>
 
-                {/* Category Tabs */}
-                <motion.div
-                    className={styles.tabs}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                >
-                    {categories.map((cat) => (
-                        <button
-                            key={cat}
-                            className={`${styles.tab} ${activeCategory === cat ? styles.tabActive : ''}`}
-                            onClick={() => setActiveCategory(cat)}
-                        >
-                            {cat}
-                            {activeCategory === cat && (
-                                <motion.span className={styles.tabIndicator} layoutId="skillTabIndicator" />
-                            )}
-                        </button>
-                    ))}
-                </motion.div>
-
-                {/* Skills Grid */}
-                <motion.div className={styles.skillsGrid} layout>
-                    <AnimatePresence mode="popLayout">
-                        {filtered.map((skill, i) => {
-                            const color = brandColors[skill.icon] || '#7c3aed';
-                            return (
-                                <motion.div
-                                    key={skill._id}
-                                    className={styles.skillCard}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.85 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.85 }}
-                                    transition={{ delay: i * 0.04, duration: 0.35 }}
-                                    whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                                >
-                                    {/* Circular progress ring */}
-                                    <div className={styles.skillRingWrapper}>
-                                        <CircularProgress value={skill.proficiency} color={color} size={90} strokeWidth={3} />
-                                        <div className={styles.skillIconCenter} style={{ color }}>
-                                            {iconMap[skill.icon] || <SiReact />}
-                                        </div>
+                <div className={styles.skillsGrid}>
+                    {data.map((skill) => {
+                        const color = brandColors[skill.icon] || '#7c3aed';
+                        return (
+                            <div key={skill._id} className={styles.skillCard}>
+                                <div className={styles.skillRingWrapper}>
+                                    <CircularProgress value={skill.proficiency} color={color} size={90} strokeWidth={3} />
+                                    <div className={styles.skillIconCenter} style={{ color }}>
+                                        {iconMap[skill.icon] || <SiReact />}
                                     </div>
-
-                                    <h4 className={styles.skillName}>{skill.name}</h4>
-
-                                    <div className={styles.skillMeta}>
-                                        <span className={styles.skillProficiency} style={{ color }}>{skill.proficiency}%</span>
-                                        <span className={styles.skillCategory}>{skill.category}</span>
-                                    </div>
-
-                                    {/* Hover glow */}
-                                    <div className={styles.skillGlow} style={{ background: color }} />
-                                </motion.div>
-                            );
-                        })}
-                    </AnimatePresence>
-                </motion.div>
+                                </div>
+                                <h4 className={styles.skillName}>{skill.name}</h4>
+                                <div className={styles.skillMeta}>
+                                    <span className={styles.skillProficiency} style={{ color }}>{skill.proficiency}%</span>
+                                    <span className={styles.skillCategory}>{skill.category}</span>
+                                </div>
+                                <div className={styles.skillGlow} style={{ background: color }} />
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         </section>
     );
