@@ -1,5 +1,6 @@
 import { HiExternalLink, HiCode } from 'react-icons/hi';
 import { Project } from '@/lib/types';
+import Reveal from './Reveal';
 import styles from './Projects.module.css';
 
 interface ProjectsProps {
@@ -10,17 +11,17 @@ export default function Projects({ data }: ProjectsProps) {
     return (
         <section id="projects" className="section">
             <div className="container">
-                <div className="section__header">
+                <Reveal className="section__header">
                     <span className="section__subtitle">Portfolio</span>
                     <h2 className="section__title">Featured Projects</h2>
                     <p className="section__description">
                         A showcase of my recent work and creative experiments
                     </p>
-                </div>
+                </Reveal>
 
                 <div className={styles.projectGrid}>
-                    {data.map((project) => (
-                        <div key={project._id} className={`glass-card ${styles.projectCard}`}>
+                    {data.map((project, i) => (
+                        <Reveal key={project._id} className={`glass-card ${styles.projectCard}`} delay={i * 0.08}>
                             <div className={styles.projectImageWrapper}>
                                 {project.imageUrl ? (
                                     // eslint-disable-next-line @next/next/no-img-element
@@ -73,7 +74,7 @@ export default function Projects({ data }: ProjectsProps) {
                                     ))}
                                 </div>
                             </div>
-                        </div>
+                        </Reveal>
                     ))}
                 </div>
             </div>

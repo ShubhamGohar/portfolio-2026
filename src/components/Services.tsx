@@ -1,5 +1,6 @@
 import { HiGlobeAlt, HiColorSwatch, HiLightningBolt, HiDatabase, HiDeviceMobile, HiCode } from 'react-icons/hi';
 import { Service } from '@/lib/types';
+import Reveal from './Reveal';
 import styles from './Services.module.css';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -19,17 +20,17 @@ export default function Services({ data }: ServicesProps) {
     return (
         <section id="services" className="section">
             <div className="container">
-                <div className="section__header">
+                <Reveal className="section__header">
                     <span className="section__subtitle">What I Do</span>
                     <h2 className="section__title">Services I Offer</h2>
                     <p className="section__description">
                         From concept to deployment, I provide end-to-end frontend solutions
                     </p>
-                </div>
+                </Reveal>
 
                 <div className={styles.servicesGrid}>
-                    {data.map((service) => (
-                        <div key={service._id} className={`glass-card ${styles.serviceCard}`}>
+                    {data.map((service, i) => (
+                        <Reveal key={service._id} className={`glass-card ${styles.serviceCard}`} delay={i * 0.08}>
                             <div className={styles.serviceIcon}>
                                 {iconMap[service.icon] || <HiGlobeAlt size={32} />}
                             </div>
@@ -43,7 +44,7 @@ export default function Services({ data }: ServicesProps) {
                                     </li>
                                 ))}
                             </ul>
-                        </div>
+                        </Reveal>
                     ))}
                 </div>
             </div>

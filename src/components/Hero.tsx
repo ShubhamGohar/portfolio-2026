@@ -1,5 +1,6 @@
 import { HeroData } from '@/lib/types';
 import { fallbackProfileImageUrl } from '@/lib/data';
+import HeroRoles from './HeroRoles';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -9,7 +10,6 @@ interface HeroProps {
 
 export default function Hero({ data, profileImageUrl }: HeroProps) {
     const imageSrc = profileImageUrl || fallbackProfileImageUrl;
-    const firstRole = data.roles[0] ?? '';
 
     return (
         <section id="home" className={styles.hero}>
@@ -36,7 +36,7 @@ export default function Hero({ data, profileImageUrl }: HeroProps) {
 
                     <div className={styles.roleWrapper}>
                         <span className={styles.roleLabel}>I&apos;m a </span>
-                        <span className={styles.roleText}>{firstRole}</span>
+                        <HeroRoles roles={data.roles} className={styles.roleText} />
                     </div>
 
                     <p className={styles.tagline}>

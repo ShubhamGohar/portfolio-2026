@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import JsonLd from "@/components/JsonLd";
+import EnableMotion from "@/components/EnableMotion";
 import { getSiteSettings } from "@/lib/get-site-settings";
 import { OG_IMAGE_URL, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -74,6 +75,7 @@ export default async function RootLayout({
         <div className="bg-gradient-blur bg-gradient-blur--purple" />
         <div className="bg-gradient-blur bg-gradient-blur--blue" />
         {children}
+        <EnableMotion />
       </body>
     </html>
   );

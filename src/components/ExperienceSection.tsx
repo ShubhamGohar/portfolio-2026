@@ -1,4 +1,5 @@
 import { Experience } from '@/lib/types';
+import Reveal from './Reveal';
 import styles from './ExperienceSection.module.css';
 
 interface ExperienceSectionProps {
@@ -14,20 +15,21 @@ export default function ExperienceSection({ data }: ExperienceSectionProps) {
     return (
         <section id="experience" className="section">
             <div className="container">
-                <div className="section__header">
+                <Reveal className="section__header">
                     <span className="section__subtitle">Career Path</span>
                     <h2 className="section__title">Work Experience</h2>
                     <p className="section__description">
                         My professional journey and the companies I&apos;ve worked with
                     </p>
-                </div>
+                </Reveal>
 
                 <div className={styles.timeline}>
                     <div className={styles.timelineLine} />
                     {data.map((exp, i) => (
-                        <div
+                        <Reveal
                             key={exp._id}
                             className={`${styles.timelineItem} ${i % 2 === 0 ? styles.left : styles.right}`}
+                            delay={i * 0.08}
                         >
                             <div className={`glass-card ${styles.timelineCard}`}>
                                 <div className={styles.cardHeader}>
@@ -45,7 +47,7 @@ export default function ExperienceSection({ data }: ExperienceSectionProps) {
                                 <p className={styles.description}>{exp.description}</p>
                             </div>
                             <div className={styles.timelineDot} />
-                        </div>
+                        </Reveal>
                     ))}
                 </div>
             </div>

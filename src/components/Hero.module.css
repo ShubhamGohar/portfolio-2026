@@ -309,6 +309,10 @@
         display: none;
     }
 
+    :global(html.motion-on) .bgOrbs {
+        display: block;
+    }
+
     .heroContainer {
         flex-direction: column-reverse;
         text-align: center;
@@ -346,6 +350,30 @@
     .profileGlow,
     .floatingBadge {
         animation: none;
+    }
+
+    :global(html.motion-on) .orb {
+        animation: float 20s ease-in-out infinite;
+    }
+
+    :global(html.motion-on) .orb1 {
+        animation-delay: 0s;
+    }
+
+    :global(html.motion-on) .orb2 {
+        animation-delay: -7s;
+    }
+
+    :global(html.motion-on) .orb3 {
+        animation-delay: -14s;
+    }
+
+    :global(html.motion-on) .profileGlow {
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    :global(html.motion-on) .floatingBadge {
+        animation: badgeFloat 3s ease-in-out infinite;
     }
 
     .profilePlaceholder span {

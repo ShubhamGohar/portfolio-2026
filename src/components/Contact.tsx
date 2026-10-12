@@ -2,6 +2,7 @@ import { HiMail, HiPhone, HiLocationMarker } from 'react-icons/hi';
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { ContactData } from '@/lib/types';
 import ContactForm from './ContactForm';
+import Reveal from './Reveal';
 import styles from './Contact.module.css';
 
 const socialIcons: Record<string, React.ReactNode> = {
@@ -19,13 +20,13 @@ export default function Contact({ data }: ContactProps) {
     return (
         <section id="contact" className="section">
             <div className="container">
-                <div className="section__header">
+                <Reveal className="section__header">
                     <span className="section__subtitle">Get In Touch</span>
                     <h2 className="section__title">Let&apos;s Work Together</h2>
                     <p className="section__description">
                         Have a project in mind? Let&apos;s discuss and bring your ideas to life.
                     </p>
-                </div>
+                </Reveal>
 
                 <div className={styles.contactGrid}>
                     <div className={styles.contactInfo}>
