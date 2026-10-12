@@ -16,7 +16,7 @@ interface FooterProps {
     logoUrl?: string;
 }
 
-export default function Footer({ contactData, logoUrl }: FooterProps) {
+export default function Footer({ contactData }: FooterProps) {
     const socials = contactData?.socials || [
         { platform: 'linkedin', url: 'https://linkedin.com/in/shubhamgohar' },
         { platform: 'github', url: 'https://github.com/shubhamgohar' },
@@ -29,12 +29,15 @@ export default function Footer({ contactData, logoUrl }: FooterProps) {
                 <div className={styles.footerContent}>
                     <div className={styles.footerLeft}>
                         <div className={styles.footerLogo}>
+                            {/* Local file + lazy: do not preload the Sanity 1024×1024 logo on first paint. */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                                src={logoUrl || LOGO_SRC}
+                                src={LOGO_SRC}
                                 alt="Shubham Gohar"
                                 width={36}
                                 height={36}
+                                loading="lazy"
+                                decoding="async"
                                 className={styles.logoImg}
                             />
                         </div>

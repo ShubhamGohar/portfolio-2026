@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "shubhamgohar.com" }],
+      "destination": "https://www.shubhamgohar.com/:path*",
+      "permanent": true
+    }
+  ]
+}
