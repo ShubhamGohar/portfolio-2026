@@ -14,10 +14,11 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { siteTitle, siteDescription, faviconUrl } = await getSiteSettings();
+  const { siteTitle, siteDescription } = await getSiteSettings();
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -29,7 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     authors: [{ name: "Shubham Gohar" }],
     alternates: { canonical: SITE_URL },
-    icons: { icon: faviconUrl || '/logo-white.webp' },
+    // Local 38px asset — a Sanity 1024×1024 favicon was getting <link rel=preload as=image>.
+    icons: { icon: '/logo-white.webp' },
     openGraph: {
       title: siteTitle,
       description: siteDescription,
