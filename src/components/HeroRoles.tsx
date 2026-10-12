@@ -10,7 +10,7 @@ interface HeroRolesProps {
 
 /**
  * Always SSR the first role as real text. After motion is enabled, rotate
- * through the rest — never mount TypeAnimation from an empty string.
+ * through the rest in place — never unmount to an empty string.
  */
 export default function HeroRoles({ roles, className }: HeroRolesProps) {
     const first = roles[0] ?? '';
@@ -27,16 +27,5 @@ export default function HeroRoles({ roles, className }: HeroRolesProps) {
         return () => window.clearInterval(id);
     }, [enabled, roles.length]);
 
-    const rotating = enabled && roles.length > 1;
-
-    return (
-        <span className={className}>
-            <span
-                key={rotating ? index : 'ssr'}
-                data-role-rotating={rotating ? 'true' : undefined}
-            >
-                {roles[index] || first}
-            </span>
-        </span>
-    );
+    return <span className={className}>{roles[index] || first}</span>;
 }
