@@ -19,8 +19,11 @@ export default function StatNumber({ value, suffix }: StatNumberProps) {
 
         let frame = 0;
         let observer: IntersectionObserver | undefined;
+        let played = false;
 
         const animateFromZero = () => {
+            if (played) return;
+            played = true;
             setCount(0);
             const duration = 1600;
             const startTime = performance.now();
@@ -34,15 +37,20 @@ export default function StatNumber({ value, suffix }: StatNumberProps) {
         };
 
         const stopMotion = onMotionReady(() => {
+            if (played) return;
             const rect = el.getBoundingClientRect();
             const visible = rect.top < window.innerHeight && rect.bottom > 0;
-            if (visible) return;
+            if (visible) {
+                played = true;
+                return;
+            }
 
             observer = new IntersectionObserver(
                 ([entry]) => {
                     if (entry.isIntersecting) {
-                        animateFromZero();
                         observer?.disconnect();
+                        observer = undefined;
+                        animateFromZero();
                     }
                 },
                 { threshold: 0.4 },
