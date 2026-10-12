@@ -9,6 +9,7 @@ import {
   heroQuery, aboutQuery, statsQuery, servicesQuery,
   projectsQuery, skillsQuery, experienceQuery, testimonialsQuery, contactQuery,
   siteSettingsQuery,
+  optimizedImageUrl,
 } from '@/lib/sanity';
 
 import {
@@ -21,7 +22,9 @@ import {
   fallbackExperience,
   fallbackTestimonials,
   fallbackContact,
+  fallbackProfileImageUrl,
 } from '@/lib/data';
+import type { HeroData } from '@/lib/types';
 
 // Below-fold sections: code-split to reduce initial JS bundle
 const Services = dynamic(() => import('@/components/Services'));
@@ -35,6 +38,12 @@ const Footer = dynamic(() => import('@/components/Footer'));
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 const isSanityConfigured = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== 'demo';
+
+function resolveProfileImageUrl(hero: HeroData) {
+  return hero.profileImage?.asset
+    ? optimizedImageUrl(hero.profileImage, 500, 500)
+    : fallbackProfileImageUrl;
+}
 
 async function getData() {
   if (isSanityConfigured) {
@@ -53,8 +62,11 @@ async function getData() {
           sanityClient.fetch(siteSettingsQuery),
         ]);
 
+      const resolvedHero = hero || fallbackHero;
+
       return {
-        hero: hero || fallbackHero,
+        hero: resolvedHero,
+        profileImageUrl: resolveProfileImageUrl(resolvedHero),
         about: about ? {
           heading: about.heading || fallbackAbout.heading,
           description: about.description || fallbackAbout.description,
@@ -76,6 +88,7 @@ async function getData() {
 
   return {
     hero: fallbackHero,
+    profileImageUrl: fallbackProfileImageUrl,
     about: fallbackAbout,
     stats: fallbackStats,
     services: fallbackServices,
@@ -95,7 +108,7 @@ export default async function Home() {
     <>
       <Navbar logoUrl={data.logoUrl} />
       <main>
-        <Hero data={data.hero} />
+        <Hero data={data.hero} profileImageUrl={data.profileImageUrl} />
         <About data={data.about} />
         <Stats data={data.stats} />
         <Services data={data.services} />

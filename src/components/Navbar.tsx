@@ -67,12 +67,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
     };
 
     return (
-        <motion.nav
-            className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-        >
+        <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
             <div className={`container ${styles.navContainer}`}>
                 <a href="#home" className={styles.logo} onClick={(e) => handleNavClick(e, '#home')}>
                     <Image
@@ -81,7 +76,6 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                         width={38}
                         height={38}
                         className={styles.logoImg}
-                        priority
                     />
                 </a>
 
@@ -138,6 +132,6 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </motion.nav>
+        </nav>
     );
 }
