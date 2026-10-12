@@ -236,6 +236,36 @@ img {
   transform: translateY(-2px);
 }
 
+/* Reveal: HTML stays fully visible. JS may mark off-screen nodes pending. */
+.reveal[data-reveal='pending'] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal[data-reveal='in'][data-reveal-animate='true'] {
+  animation: reveal-in 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal[data-reveal='pending'],
+  .reveal[data-reveal='in'][data-reveal-animate='true'] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* ========== Background Effects ========== */
 .bg-grid {
   position: fixed;
@@ -295,6 +325,15 @@ img {
 
   .glass-card:hover {
     transform: none;
+  }
+
+  html.motion-on .glass-card {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  html.motion-on .glass-card:hover {
+    transform: translateY(-4px);
   }
   
   .section__header {

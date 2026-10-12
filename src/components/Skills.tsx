@@ -1,4 +1,5 @@
 import { Skill } from '@/lib/types';
+import Reveal from './Reveal';
 import {
     SiReact, SiNextdotjs, SiTypescript, SiJavascript, SiHtml5, SiCss,
     SiThreedotjs, SiNodedotjs, SiGit, SiWebpack, SiFigma, SiRedux,
@@ -79,19 +80,19 @@ export default function Skills({ data }: SkillsProps) {
     return (
         <section id="skills" className="section">
             <div className="container">
-                <div className="section__header">
+                <Reveal className="section__header">
                     <span className="section__subtitle">My Skills</span>
                     <h2 className="section__title">Skills & Technologies</h2>
                     <p className="section__description">
                         Technologies I work with to bring ideas to life
                     </p>
-                </div>
+                </Reveal>
 
                 <div className={styles.skillsGrid}>
-                    {data.map((skill) => {
+                    {data.map((skill, i) => {
                         const color = brandColors[skill.icon] || '#7c3aed';
                         return (
-                            <div key={skill._id} className={styles.skillCard}>
+                            <Reveal key={skill._id} className={styles.skillCard} delay={i * 0.05}>
                                 <div className={styles.skillRingWrapper}>
                                     <CircularProgress value={skill.proficiency} color={color} size={90} strokeWidth={3} />
                                     <div className={styles.skillIconCenter} style={{ color }}>
@@ -104,7 +105,7 @@ export default function Skills({ data }: SkillsProps) {
                                     <span className={styles.skillCategory}>{skill.category}</span>
                                 </div>
                                 <div className={styles.skillGlow} style={{ background: color }} />
-                            </div>
+                            </Reveal>
                         );
                     })}
                 </div>

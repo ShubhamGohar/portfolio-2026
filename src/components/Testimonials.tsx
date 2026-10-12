@@ -1,5 +1,6 @@
 import { FaQuoteLeft } from 'react-icons/fa';
 import { Testimonial } from '@/lib/types';
+import Reveal from './Reveal';
 import styles from './Testimonials.module.css';
 
 interface TestimonialsProps {
@@ -12,17 +13,17 @@ export default function Testimonials({ data }: TestimonialsProps) {
     return (
         <section id="testimonials" className="section">
             <div className="container">
-                <div className="section__header">
+                <Reveal className="section__header">
                     <span className="section__subtitle">Testimonials</span>
                     <h2 className="section__title">What People Say</h2>
                     <p className="section__description">
                         Feedback from clients and colleagues I&apos;ve worked with
                     </p>
-                </div>
+                </Reveal>
 
                 <div className={styles.list}>
-                    {data.map((item) => (
-                        <div key={item._id} className={`glass-card ${styles.testimonialCard}`}>
+                    {data.map((item, i) => (
+                        <Reveal key={item._id} className={`glass-card ${styles.testimonialCard}`} delay={i * 0.08}>
                             <FaQuoteLeft className={styles.quoteIcon} size={32} />
                             <p className={styles.quote}>{item.quote}</p>
                             <div className={styles.author}>
@@ -36,7 +37,7 @@ export default function Testimonials({ data }: TestimonialsProps) {
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </Reveal>
                     ))}
                 </div>
             </div>
