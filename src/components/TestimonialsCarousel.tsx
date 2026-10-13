@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useId, useState, type KeyboardEvent } from 'react';
+import { useCallback, useId, useState, type KeyboardEvent, type SyntheticEvent } from 'react';
 import { FaQuoteLeft } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { Testimonial } from '@/lib/types';
@@ -12,6 +12,36 @@ interface TestimonialsCarouselProps {
 
 function wrapIndex(index: number, length: number) {
     return ((index % length) + length) % length;
+}
+
+function AuthorAvatar({ name, src }: { name: string; src?: string }) {
+    const [failed, setFailed] = useState(false);
+    const showImage = Boolean(src) && !failed;
+
+    const onError = (event: SyntheticEvent<HTMLImageElement>) => {
+        event.currentTarget.style.display = 'none';
+        setFailed(true);
+    };
+
+    return (
+        <div className={`${styles.authorAvatar} ${showImage ? styles.authorAvatarHasImage : ''}`}>
+            {showImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                    src={src}
+                    alt=""
+                    width={48}
+                    height={48}
+                    loading="lazy"
+                    decoding="async"
+                    className={styles.authorAvatarImage}
+                    onError={onError}
+                />
+            ) : (
+                <span>{name.charAt(0)}</span>
+            )}
+        </div>
+    );
 }
 
 export default function TestimonialsCarousel({ data }: TestimonialsCarouselProps) {
@@ -90,9 +120,7 @@ export default function TestimonialsCarousel({ data }: TestimonialsCarouselProps
                                 <FaQuoteLeft className={styles.quoteIcon} size={32} aria-hidden />
                                 <p className={styles.quote}>{item.quote}</p>
                                 <div className={styles.author}>
-                                    <div className={styles.authorAvatar}>
-                                        <span>{item.name.charAt(0)}</span>
-                                    </div>
+                                    <AuthorAvatar name={item.name} src={item.avatarUrl} />
                                     <div>
                                         <h4 className={styles.authorName}>{item.name}</h4>
                                         <p className={styles.authorRole}>

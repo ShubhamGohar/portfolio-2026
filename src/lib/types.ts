@@ -57,6 +57,7 @@ export interface Experience {
     endDate?: string;
     description: string;
     logo?: SanityImage;
+    logoUrl?: string;
 }
 
 export interface Testimonial {
@@ -66,6 +67,7 @@ export interface Testimonial {
     role: string;
     quote: string;
     avatar?: SanityImage;
+    avatarUrl?: string;
 }
 
 export interface ContactData {

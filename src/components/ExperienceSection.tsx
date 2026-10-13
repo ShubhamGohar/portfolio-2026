@@ -1,4 +1,5 @@
 import { Experience } from '@/lib/types';
+import { cmsImageUrl } from '@/lib/sanity';
 import Reveal from './Reveal';
 import styles from './ExperienceSection.module.css';
 
@@ -9,6 +10,28 @@ interface ExperienceSectionProps {
 function formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
+
+function CompanyLogo({ company, logo, logoUrl }: Pick<Experience, 'company' | 'logo' | 'logoUrl'>) {
+    const src = logoUrl || cmsImageUrl(logo, 96);
+    return (
+        <div className={`${styles.companyLogo} ${src ? styles.companyLogoHasImage : ''}`}>
+            {src ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                    src={src}
+                    alt={`${company} logo`}
+                    width={48}
+                    height={48}
+                    loading="lazy"
+                    decoding="async"
+                    className={styles.companyLogoImage}
+                />
+            ) : (
+                <span>{company.charAt(0)}</span>
+            )}
+        </div>
+    );
 }
 
 export default function ExperienceSection({ data }: ExperienceSectionProps) {
@@ -33,9 +56,7 @@ export default function ExperienceSection({ data }: ExperienceSectionProps) {
                         >
                             <div className={`glass-card ${styles.timelineCard}`}>
                                 <div className={styles.cardHeader}>
-                                    <div className={styles.companyLogo}>
-                                        <span>{exp.company.charAt(0)}</span>
-                                    </div>
+                                    <CompanyLogo company={exp.company} logo={exp.logo} logoUrl={exp.logoUrl} />
                                     <div>
                                         <h3 className={styles.role}>{exp.role}</h3>
                                         <p className={styles.company}>{exp.company}</p>
