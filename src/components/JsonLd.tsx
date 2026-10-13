@@ -3,9 +3,10 @@ import { SITE_URL } from '@/lib/site';
 interface JsonLdProps {
   title: string;
   description: string;
+  jobTitle?: string;
 }
 
-export default function JsonLd({ title, description }: JsonLdProps) {
+export default function JsonLd({ title, description, jobTitle = 'Engineer' }: JsonLdProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -20,7 +21,7 @@ export default function JsonLd({ title, description }: JsonLdProps) {
         '@type': 'Person',
         '@id': `${SITE_URL}/#person`,
         name: 'Shubham Gohar',
-        jobTitle: 'Fullstack Engineer',
+        jobTitle,
         url: SITE_URL,
         description,
         sameAs: [

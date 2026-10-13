@@ -3,12 +3,22 @@ import imageUrlBuilder from '@sanity/image-url';
 
 type SanityImageSource = Parameters<ReturnType<typeof imageUrlBuilder>['image']>[0];
 
+export const SANITY_CACHE_TAG = 'sanity';
+
 export const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'demo',
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   apiVersion: '2024-01-01',
-  useCdn: true,
+  // Hit the API, not the Sanity CDN, so on-demand revalidation is not racing a CDN TTL.
+  useCdn: false,
+  perspective: 'published',
 });
+
+export function sanityFetch<T>(query: string): Promise<T> {
+  return sanityClient.fetch<T>(query, {}, {
+    next: { tags: [SANITY_CACHE_TAG], revalidate: 60 },
+  });
+}
 
 const builder = imageUrlBuilder(sanityClient);
 
