@@ -1,9 +1,17 @@
 import { Testimonial } from '@/lib/types';
+import { cmsImageUrl } from '@/lib/sanity';
 import Reveal from './Reveal';
 import TestimonialsCarousel from './TestimonialsCarousel';
 
 interface TestimonialsProps {
     data: Testimonial[];
+}
+
+function withAvatarUrls(data: Testimonial[]): Testimonial[] {
+    return data.map((item) => ({
+        ...item,
+        avatarUrl: item.avatarUrl || cmsImageUrl(item.avatar, 96, 96),
+    }));
 }
 
 export default function Testimonials({ data }: TestimonialsProps) {
@@ -20,7 +28,7 @@ export default function Testimonials({ data }: TestimonialsProps) {
                     </p>
                 </Reveal>
 
-                <TestimonialsCarousel data={data} />
+                <TestimonialsCarousel data={withAvatarUrls(data)} />
             </div>
         </section>
     );

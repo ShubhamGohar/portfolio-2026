@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
+import type { SanityImage } from './types';
 
 type SanityImageSource = Parameters<ReturnType<typeof imageUrlBuilder>['image']>[0];
 
@@ -36,6 +37,16 @@ export function optimizedImageUrl(
   let image = urlFor(source).width(width).format('webp').quality(quality);
   if (height) image = image.height(height);
   return image.url();
+}
+
+/** CDN URL when a CMS image asset is present; otherwise undefined (letter fallback). */
+export function cmsImageUrl(
+  image: SanityImage | undefined,
+  width: number,
+  height?: number,
+): string | undefined {
+  if (!image?.asset) return undefined;
+  return optimizedImageUrl(image, width, height);
 }
 
 // ============ GROQ Queries ============

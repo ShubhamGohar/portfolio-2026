@@ -36,6 +36,11 @@
     color: white;
 }
 
+.tab:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 3px;
+}
+
 .tabIndicator {
     position: absolute;
     inset: 0;
