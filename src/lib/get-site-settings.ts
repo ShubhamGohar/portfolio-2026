@@ -1,6 +1,5 @@
-import { sanityClient, siteSettingsQuery } from '@/lib/sanity';
+import { sanityFetch, siteSettingsQuery } from '@/lib/sanity';
 import {
-  isLegacyFrontendCopy,
   positioningSiteDescription,
   positioningSiteTitle,
 } from '@/lib/positioning';
@@ -15,22 +14,33 @@ const defaults = {
   faviconUrl: undefined as string | undefined,
 };
 
+export function jobTitleFromSiteTitle(siteTitle: string): string {
+  const afterPipe = siteTitle.split('|').slice(1).join('|').trim();
+  if (!afterPipe) return siteTitle;
+  return afterPipe.split(/\s+[—–-]\s+/)[0]?.trim() || afterPipe;
+}
+
 export async function getSiteSettings() {
-  if (!isSanityConfigured) return defaults;
+  if (!isSanityConfigured) {
+    return { ...defaults, jobTitle: jobTitleFromSiteTitle(defaults.siteTitle) };
+  }
 
   try {
-    const settings = await sanityClient.fetch(siteSettingsQuery);
+    const settings = await sanityFetch<{
+      siteTitle?: string;
+      siteDescription?: string;
+      faviconUrl?: string;
+    }>(siteSettingsQuery);
     const siteTitle = settings?.siteTitle || defaults.siteTitle;
     const siteDescription = settings?.siteDescription || defaults.siteDescription;
     return {
-      siteTitle: isLegacyFrontendCopy(siteTitle) ? defaults.siteTitle : siteTitle,
-      siteDescription: isLegacyFrontendCopy(siteDescription)
-        ? defaults.siteDescription
-        : siteDescription,
+      siteTitle,
+      siteDescription,
       faviconUrl: settings?.faviconUrl || defaults.faviconUrl,
+      jobTitle: jobTitleFromSiteTitle(siteTitle),
     };
   } catch (e) {
     console.error('Failed to fetch site settings:', e);
-    return defaults;
+    return { ...defaults, jobTitle: jobTitleFromSiteTitle(defaults.siteTitle) };
   }
 }

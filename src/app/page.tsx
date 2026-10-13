@@ -11,7 +11,7 @@ import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
 import {
-  sanityClient,
+  sanityFetch,
   heroQuery, aboutQuery, statsQuery, servicesQuery,
   projectsQuery, skillsQuery, experienceQuery, testimonialsQuery, contactQuery,
   siteSettingsQuery,
@@ -31,13 +31,23 @@ import {
   fallbackProfileImageUrl,
 } from '@/lib/data';
 import {
-  withPositioningAbout,
-  withPositioningExperience,
-  withPositioningHero,
-  withPositioningServices,
-  withPositioningStats,
+  withAboutFallbacks,
+  withExperienceFallbacks,
+  withHeroFallbacks,
+  withServicesFallbacks,
+  withStatsFallbacks,
 } from '@/lib/positioning';
-import type { HeroData, Project } from '@/lib/types';
+import type {
+  AboutData,
+  ContactData,
+  Experience,
+  HeroData,
+  Project,
+  Service,
+  Skill,
+  StatsData,
+  Testimonial,
+} from '@/lib/types';
 
 export const revalidate = 60;
 
@@ -63,36 +73,32 @@ async function getData() {
     try {
       const [hero, about, stats, services, projects, skills, experience, testimonials, contact, siteSettings] =
         await Promise.all([
-          sanityClient.fetch(heroQuery),
-          sanityClient.fetch(aboutQuery),
-          sanityClient.fetch(statsQuery),
-          sanityClient.fetch(servicesQuery),
-          sanityClient.fetch(projectsQuery),
-          sanityClient.fetch(skillsQuery),
-          sanityClient.fetch(experienceQuery),
-          sanityClient.fetch(testimonialsQuery),
-          sanityClient.fetch(contactQuery),
-          sanityClient.fetch(siteSettingsQuery),
+          sanityFetch<HeroData | null>(heroQuery),
+          sanityFetch<AboutData | null>(aboutQuery),
+          sanityFetch<StatsData | null>(statsQuery),
+          sanityFetch<Service[] | null>(servicesQuery),
+          sanityFetch<Project[] | null>(projectsQuery),
+          sanityFetch<Skill[] | null>(skillsQuery),
+          sanityFetch<Experience[] | null>(experienceQuery),
+          sanityFetch<Testimonial[] | null>(testimonialsQuery),
+          sanityFetch<ContactData | null>(contactQuery),
+          sanityFetch<{ logoUrl?: string | null } | null>(siteSettingsQuery),
         ]);
 
-      const resolvedHero = withPositioningHero(hero || fallbackHero);
+      const resolvedHero = withHeroFallbacks(hero);
 
       return {
         hero: resolvedHero,
         profileImageUrl: resolveProfileImageUrl(resolvedHero),
-        about: withPositioningAbout(about ? {
-          heading: about.heading || fallbackAbout.heading,
-          description: about.description || fallbackAbout.description,
-          cards: about.cards?.length ? about.cards : fallbackAbout.cards,
-        } : fallbackAbout),
-        stats: withPositioningStats(stats?.items?.length ? stats : fallbackStats),
-        services: withPositioningServices(services?.length ? services : fallbackServices),
+        about: withAboutFallbacks(about),
+        stats: withStatsFallbacks(stats),
+        services: withServicesFallbacks(services),
         projects: withProjectImageUrls(projects?.length ? projects : fallbackProjects),
         skills: skills?.length ? skills : fallbackSkills,
-        experience: withPositioningExperience(experience?.length ? experience : fallbackExperience),
+        experience: withExperienceFallbacks(experience),
         testimonials: testimonials?.length ? testimonials : fallbackTestimonials,
         contact: contact || fallbackContact,
-        logoUrl: siteSettings?.logoUrl || null,
+        logoUrl: siteSettings?.logoUrl || undefined,
       };
     } catch (err) {
       console.error('Failed to fetch from Sanity, using fallback data:', err);
@@ -110,7 +116,7 @@ async function getData() {
     experience: fallbackExperience,
     testimonials: fallbackTestimonials,
     contact: fallbackContact,
-    logoUrl: null,
+    logoUrl: undefined,
   };
 }
 

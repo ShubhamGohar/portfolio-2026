@@ -64,12 +64,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { siteTitle, siteDescription } = await getSiteSettings();
+  const { siteTitle, siteDescription, jobTitle } = await getSiteSettings();
 
   return (
     <html lang="en" className={inter.variable} style={{ background: "#0a0a0f", colorScheme: "dark" }}>
       <body style={{ background: "#0a0a0f", color: "#f0f0f5" }}>
-        <JsonLd title={siteTitle} description={siteDescription} />
+        <JsonLd title={siteTitle} description={siteDescription} jobTitle={jobTitle} />
         {/* Background effects */}
         <div className="bg-grid" />
         <div className="bg-gradient-blur bg-gradient-blur--purple" />
