@@ -20,7 +20,7 @@ export default function JsonLd({ title, description }: JsonLdProps) {
         '@type': 'Person',
         '@id': `${SITE_URL}/#person`,
         name: 'Shubham Gohar',
-        jobTitle: 'Frontend Engineer',
+        jobTitle: 'Fullstack Engineer',
         url: SITE_URL,
         description,
         sameAs: [

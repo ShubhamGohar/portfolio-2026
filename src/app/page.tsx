@@ -30,6 +30,13 @@ import {
   fallbackContact,
   fallbackProfileImageUrl,
 } from '@/lib/data';
+import {
+  withPositioningAbout,
+  withPositioningExperience,
+  withPositioningHero,
+  withPositioningServices,
+  withPositioningStats,
+} from '@/lib/positioning';
 import type { HeroData, Project } from '@/lib/types';
 
 export const revalidate = 60;
@@ -68,21 +75,21 @@ async function getData() {
           sanityClient.fetch(siteSettingsQuery),
         ]);
 
-      const resolvedHero = hero || fallbackHero;
+      const resolvedHero = withPositioningHero(hero || fallbackHero);
 
       return {
         hero: resolvedHero,
         profileImageUrl: resolveProfileImageUrl(resolvedHero),
-        about: about ? {
+        about: withPositioningAbout(about ? {
           heading: about.heading || fallbackAbout.heading,
           description: about.description || fallbackAbout.description,
           cards: about.cards?.length ? about.cards : fallbackAbout.cards,
-        } : fallbackAbout,
-        stats: stats?.items?.length ? stats : fallbackStats,
-        services: services?.length ? services : fallbackServices,
+        } : fallbackAbout),
+        stats: withPositioningStats(stats?.items?.length ? stats : fallbackStats),
+        services: withPositioningServices(services?.length ? services : fallbackServices),
         projects: withProjectImageUrls(projects?.length ? projects : fallbackProjects),
         skills: skills?.length ? skills : fallbackSkills,
-        experience: experience?.length ? experience : fallbackExperience,
+        experience: withPositioningExperience(experience?.length ? experience : fallbackExperience),
         testimonials: testimonials?.length ? testimonials : fallbackTestimonials,
         contact: contact || fallbackContact,
         logoUrl: siteSettings?.logoUrl || null,

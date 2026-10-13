@@ -5,7 +5,7 @@ export const siteSettings = defineType({
     title: 'Site Settings',
     type: 'document',
     fields: [
-        defineField({ name: 'siteTitle', title: 'Website Title', type: 'string', description: 'Shown in the browser tab (e.g. "Shubham Gohar | Frontend Engineer")' }),
+        defineField({ name: 'siteTitle', title: 'Website Title', type: 'string', description: 'Shown in the browser tab (e.g. "Shubham Gohar | Fullstack Engineer")' }),
         defineField({ name: 'siteDescription', title: 'SEO Description', type: 'text', rows: 2, description: 'Meta description for search engines' }),
         defineField({
             name: 'logo',
