@@ -101,7 +101,7 @@ export const fallbackExperience: Experience[] = [
     {
         _id: '1',
         company: 'Publicis Sapient',
-        role: 'Senior Frontend Engineer',
+        role: 'Senior Experience Engineer',
         startDate: '2022-07-08',
         endDate: undefined,
         description: 'Leading SFCC frontend and fullstack architecture for enterprise-scale commerce applications. Mentoring junior developers and driving adoption of modern React and Node.js patterns.',

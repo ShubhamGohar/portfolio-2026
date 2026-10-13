@@ -96,14 +96,18 @@ export function withPositioningServices(services: Service[]): Service[] {
 export function withPositioningExperience(experience: Experience[]): Experience[] {
   const list = experience?.length ? experience : fallbackExperience;
   return list.map((job) => {
-    if (
-      job.company === 'Publicis Sapient' &&
-      /leading frontend architecture/i.test(job.description)
-    ) {
-      const updated = fallbackExperience.find((item) => item.company === 'Publicis Sapient');
-      return updated ? { ...job, description: updated.description } : job;
+    if (job.company !== 'Publicis Sapient') return job;
+    const updated = fallbackExperience.find((item) => item.company === 'Publicis Sapient');
+    if (!updated) return job;
+
+    let next = job;
+    if (/senior frontend engineer/i.test(job.role)) {
+      next = { ...next, role: updated.role };
     }
-    return job;
+    if (/leading frontend architecture/i.test(job.description)) {
+      next = { ...next, description: updated.description };
+    }
+    return next;
   });
 }
 
