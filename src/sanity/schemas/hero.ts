@@ -24,7 +24,7 @@ export const hero = defineType({
         defineField({
             name: 'badges',
             title: 'Floating Badges',
-            description: 'Small floating labels around the profile image (e.g. "7+ Years", "50+ Projects")',
+            description: 'Small floating labels around the profile image (e.g. "10 Years", "50+ Projects")',
             type: 'array',
             of: [{ type: 'string' }],
             validation: (r) => r.max(3),

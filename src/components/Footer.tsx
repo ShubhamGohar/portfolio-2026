@@ -42,7 +42,7 @@ export default function Footer({ contactData }: FooterProps) {
                             />
                         </div>
                         <p className={styles.footerDescription}>
-                            Frontend Engineer crafting beautiful, performant web experiences.
+                            Fullstack engineer building SFCC storefronts and performant web applications.
                         </p>
                     </div>
 

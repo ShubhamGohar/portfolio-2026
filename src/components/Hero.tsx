@@ -77,7 +77,7 @@ export default function Hero({ data, profileImageUrl }: HeroProps) {
                                 className={styles.profileImage}
                             />
                         </div>
-                        {(data.badges || ['7+ Years', '50+ Projects']).map((badge, i) => {
+                        {(data.badges || ['10 Years', '50+ Projects']).map((badge, i) => {
                             const positions = [
                                 { top: '10%', right: '-10%' },
                                 { bottom: '15%', left: '-10%' },

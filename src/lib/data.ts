@@ -9,19 +9,19 @@ export const fallbackProfileImageUrl =
 export const fallbackHero: HeroData = {
     name: 'Shubham Gohar',
     tagline: 'I build things for the web.',
-    roles: ['Frontend Engineer', 'React Developer', 'UI/UX Enthusiast', 'Freelancer'],
+    roles: ['Fullstack Engineer', 'SFCC Developer', 'Next.js Developer', 'UI/UX Enthusiast', 'Freelancer'],
     resumeURL: '#',
-    badges: ['8+ Years', '50+ Projects'],
+    badges: ['10 Years', '50+ Projects'],
 };
 
 export const fallbackAbout: AboutData = {
     heading: 'I Know That Good Development Means Good Business',
-    description: 'With 7+ years of experience in frontend engineering, I craft high-performance, pixel-perfect web applications that drive business results.',
+    description: 'With 10 years of experience as a fullstack engineer, I build high-performance web applications — from Salesforce Commerce Cloud storefronts to backend services — that drive business results.',
     cards: [
-        { title: 'Frontend Development', description: 'Building responsive, performant web applications with React, Next.js, and modern JavaScript.', icon: 'code' },
+        { title: 'Fullstack Development', description: 'Building SFCC storefronts and fullstack web applications with React, Next.js, TypeScript, and Node.js.', icon: 'code' },
         { title: 'UI/UX Design', description: 'Creating intuitive, beautiful interfaces with attention to detail and user experience.', icon: 'design' },
         { title: 'Performance Optimization', description: 'Ensuring lightning-fast load times with code splitting, lazy loading, and caching strategies.', icon: 'speed' },
-        { title: 'Technical Consulting', description: 'Helping teams adopt best practices, modern tooling, and scalable architecture.', icon: 'consulting' },
+        { title: 'Technical Consulting', description: 'Helping teams adopt best practices, modern tooling, and scalable fullstack architecture.', icon: 'consulting' },
     ],
 };
 
@@ -101,33 +101,41 @@ export const fallbackExperience: Experience[] = [
     {
         _id: '1',
         company: 'Publicis Sapient',
-        role: 'Senior Frontend Engineer',
-        startDate: '2022-01-01',
+        role: 'Senior Experience Engineer',
+        startDate: '2022-07-08',
         endDate: undefined,
-        description: 'Leading frontend architecture for enterprise-scale applications. Mentoring junior developers and driving adoption of modern React patterns.',
+        description: 'Leading SFCC frontend and fullstack architecture for enterprise-scale commerce applications. Mentoring junior developers and driving adoption of modern React and Node.js patterns.',
     },
     {
         _id: '2',
         company: 'Orcapod',
         role: 'Frontend Developer',
-        startDate: '2020-06-01',
-        endDate: '2021-12-31',
+        startDate: '2022-03-01',
+        endDate: '2022-07-07',
         description: 'Built responsive web apps and dashboards using React, Redux, and TypeScript. Improved performance by 40% through code optimization.',
     },
     {
         _id: '3',
         company: 'Aarcons',
         role: 'Web Developer',
-        startDate: '2019-01-01',
-        endDate: '2020-05-31',
+        startDate: '2019-11-01',
+        endDate: '2022-02-28',
         description: 'Developed and maintained client websites and web applications. Implemented responsive designs and cross-browser compatibility.',
     },
     {
         _id: '4',
         company: 'BITS',
         role: 'Junior Developer',
-        startDate: '2018-01-01',
-        endDate: '2018-12-31',
+        startDate: '2019-01-01',
+        endDate: '2019-03-01',
+        description: 'Worked as a web designer at the company. Here I used to design websites and deliver the final project to the client.',
+    },
+    {
+        _id: '5',
+        company: 'Aarambh E-Services Private Limited',
+        role: 'Data Analyst',
+        startDate: '2016-12-01',
+        endDate: '2018-11-01',
         description: 'Started career building interfaces with HTML, CSS, and JavaScript. Gained experience in responsive design and version control.',
     },
 ];
@@ -168,10 +176,10 @@ export const fallbackContact: ContactData = {
 
 export const fallbackStats: StatsData = {
     items: [
-        { label: 'Years Experience', value: 7, suffix: '+' },
+        { label: 'Years Experience', value: 10, suffix: '' },
         { label: 'Projects Completed', value: 50, suffix: '+' },
         { label: 'Happy Clients', value: 30, suffix: '+' },
-        { label: 'Technologies', value: 15, suffix: '+' },
+        { label: 'Technologies', value: 12, suffix: '+' },
     ],
 };
 
@@ -179,9 +187,9 @@ export const fallbackServices: Service[] = [
     {
         _id: '1',
         title: 'Web Application Development',
-        description: 'End-to-end development of modern, scalable web applications using React, Next.js, and TypeScript.',
+        description: 'End-to-end fullstack development of modern, scalable web applications with React, Next.js, TypeScript, Node.js, and Salesforce Commerce Cloud (SFCC).',
         icon: 'web',
-        features: ['Single Page Applications', 'Server-Side Rendering', 'Progressive Web Apps', 'API Integration'],
+        features: ['Single Page Applications', 'Server-Side Rendering', 'Progressive Web Apps', 'API Integration', 'Salesforce Commerce Cloud (SFCC)', 'Node.js backends'],
     },
     {
         _id: '2',
@@ -203,5 +211,19 @@ export const fallbackServices: Service[] = [
         description: 'Setting up headless CMS solutions for easy, no-code content management.',
         icon: 'cms',
         features: ['Sanity CMS', 'Payload CMS', 'Content Modeling', 'Real-time Preview'],
+    },
+    {
+        _id: '5',
+        title: 'Responsive & Mobile-First Design',
+        description: 'Building fluid, adaptive interfaces that deliver flawless experiences across every device — from mobile phones to ultra-wide desktops.',
+        icon: 'mobile',
+        features: ['Mobile-first responsive layouts', 'Cross-browser compatibility testing', 'Touch-optimized interactions', 'Progressive Web App (PWA) setup'],
+    },
+    {
+        _id: '6',
+        title: 'API Integration & Architecture',
+        description: 'Connecting storefronts and web apps with backend services, third-party APIs, and real-time data — Node.js APIs, auth flows, and SFCC integrations.',
+        icon: 'api',
+        features: ['RESTful & GraphQL API integration', 'Real-time data with WebSockets', 'Authentication & authorization flows', 'Third-party service integration'],
     },
 ];

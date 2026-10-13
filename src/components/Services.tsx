@@ -24,7 +24,7 @@ export default function Services({ data }: ServicesProps) {
                     <span className="section__subtitle">What I Do</span>
                     <h2 className="section__title">Services I Offer</h2>
                     <p className="section__description">
-                        From concept to deployment, I provide end-to-end frontend solutions
+                        From concept to deployment, I provide end-to-end fullstack solutions
                     </p>
                 </Reveal>
 
