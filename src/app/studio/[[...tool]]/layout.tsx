@@ -1,4 +1,10 @@
-export const metadata = {
+import type { Metadata } from 'next';
+import { metadata as studioMetadata, viewport } from 'next-sanity/studio';
+
+export { viewport };
+
+export const metadata: Metadata = {
+    ...studioMetadata,
     title: 'Portfolio CMS — Sanity Studio',
     description: 'Content management for your portfolio',
 };
