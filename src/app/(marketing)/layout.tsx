@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import JsonLd from "@/components/JsonLd";
 import EnableMotion from "@/components/EnableMotion";
 import { getSiteSettings } from "@/lib/get-site-settings";
