@@ -1,35 +1,49 @@
 import { SITE_URL } from '@/lib/site';
+import type { PublishedProfile } from '@/lib/published-profile';
 
-interface JsonLdProps {
-  title: string;
-  description: string;
-  jobTitle?: string;
-}
+export default function JsonLd({ profile }: { profile: PublishedProfile }) {
+  const personId = `${SITE_URL}/#person`;
+  const websiteId = `${SITE_URL}/#website`;
 
-export default function JsonLd({ title, description, jobTitle = 'Engineer' }: JsonLdProps) {
+  const person: Record<string, unknown> = {
+    '@type': 'Person',
+    '@id': personId,
+    name: profile.name,
+    jobTitle: profile.jobTitle,
+    url: SITE_URL,
+    description: profile.siteDescription,
+    image: {
+      '@type': 'ImageObject',
+      url: profile.imageUrl,
+    },
+    email: profile.email,
+    telephone: profile.telephone,
+  };
+
+  if (profile.sameAs.length) {
+    person.sameAs = profile.sameAs;
+  }
+
+  if (profile.worksFor) {
+    person.worksFor = {
+      '@type': 'Organization',
+      name: profile.worksFor,
+    };
+  }
+
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'WebSite',
-        '@id': `${SITE_URL}/#website`,
+        '@id': websiteId,
         url: SITE_URL,
-        name: title,
-        description,
+        name: profile.siteTitle,
+        description: profile.siteDescription,
+        publisher: { '@id': personId },
+        author: { '@id': personId },
       },
-      {
-        '@type': 'Person',
-        '@id': `${SITE_URL}/#person`,
-        name: 'Shubham Gohar',
-        jobTitle,
-        url: SITE_URL,
-        description,
-        sameAs: [
-          'https://linkedin.com/in/shubhamgohar',
-          'https://github.com/shubhamgohar',
-          'https://twitter.com/shubhamgohar',
-        ],
-      },
+      person,
     ],
   };
 

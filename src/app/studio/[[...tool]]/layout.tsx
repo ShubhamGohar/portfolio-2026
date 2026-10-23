@@ -7,6 +7,7 @@ export const metadata: Metadata = {
     ...studioMetadata,
     title: 'Portfolio CMS — Sanity Studio',
     description: 'Content management for your portfolio',
+    robots: { index: false, follow: false },
 };
 
 export default function StudioLayout({ children }: { children: React.ReactNode }) {
