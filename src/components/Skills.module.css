@@ -130,7 +130,8 @@
 
 .skillCategory {
     font-size: 0.7rem;
-    color: var(--text-muted);
+    /* #6b6b80 on #111116 was 3.62:1; this keeps the muted cool gray at ≥4.5:1. */
+    color: #84849c;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     font-weight: 600;

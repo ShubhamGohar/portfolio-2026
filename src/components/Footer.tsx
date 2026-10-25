@@ -29,7 +29,7 @@ export default function Footer({ contactData }: FooterProps) {
                 <div className={styles.footerContent}>
                     <div className={styles.footerLeft}>
                         <div className={styles.footerLogo}>
-                            {/* Local file + lazy: do not preload the Sanity 1024×1024 logo on first paint. */}
+                            {/* Local 128² file + lazy: do not compete with LCP on first paint. */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={LOGO_SRC}

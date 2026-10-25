@@ -6,9 +6,16 @@ import styles from './Hero.module.css';
 interface HeroProps {
     data: HeroData;
     profileImageUrl: string;
+    profileImageSrcSet?: string;
+    profileImageSizes?: string;
 }
 
-export default function Hero({ data, profileImageUrl }: HeroProps) {
+export default function Hero({
+    data,
+    profileImageUrl,
+    profileImageSrcSet,
+    profileImageSizes,
+}: HeroProps) {
     const imageSrc = profileImageUrl || fallbackProfileImageUrl;
 
     return (
@@ -65,16 +72,18 @@ export default function Hero({ data, profileImageUrl }: HeroProps) {
                     <div className={styles.profileFrame}>
                         <div className={styles.profileGlow} />
                         <div className={styles.profileImageWrapper}>
-                            {/* Sanity CDN URL is already sized WebP — skip the /_next/image hop on LCP. */}
+                            {/* Sanity CDN srcset — skip the /_next/image hop on LCP. */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                                src={imageSrc}
                                 alt={data.name}
                                 width={500}
                                 height={500}
                                 fetchPriority="high"
                                 decoding="async"
                                 className={styles.profileImage}
+                                srcSet={profileImageSrcSet}
+                                sizes={profileImageSizes}
+                                src={imageSrc}
                             />
                         </div>
                         {(data.badges || ['10 Years', '50+ Projects']).map((badge, i) => {

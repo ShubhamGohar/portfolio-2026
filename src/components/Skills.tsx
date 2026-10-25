@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useMemo, useState, type KeyboardEvent } from 'react';
 import { Skill } from '@/lib/types';
 import Reveal from './Reveal';
 import {
@@ -9,19 +9,19 @@ import {
 } from 'react-icons/si';
 import styles from './Skills.module.css';
 
-const iconMap: Record<string, ReactNode> = {
-    react: <SiReact />,
-    nextjs: <SiNextdotjs />,
-    typescript: <SiTypescript />,
-    javascript: <SiJavascript />,
-    html: <SiHtml5 />,
-    css: <SiCss />,
-    threejs: <SiThreedotjs />,
-    nodejs: <SiNodedotjs />,
-    git: <SiGit />,
-    webpack: <SiWebpack />,
-    figma: <SiFigma />,
-    redux: <SiRedux />,
+const iconMap: Record<string, typeof SiReact> = {
+    react: SiReact,
+    nextjs: SiNextdotjs,
+    typescript: SiTypescript,
+    javascript: SiJavascript,
+    html: SiHtml5,
+    css: SiCss,
+    threejs: SiThreedotjs,
+    nodejs: SiNodedotjs,
+    git: SiGit,
+    webpack: SiWebpack,
+    figma: SiFigma,
+    redux: SiRedux,
 };
 
 const brandColors: Record<string, string> = {
@@ -58,18 +58,24 @@ function tabId(category: string) {
     return `skill-tab-${category.replace(/\s+/g, '-').toLowerCase()}`;
 }
 
-function CircularProgress({ value, color, size = 80, strokeWidth = 4 }: {
+function CircularProgress({ value, color, size = 80, strokeWidth = 4, label }: {
     value: number;
     color: string;
     size?: number;
     strokeWidth?: number;
+    label: string;
 }) {
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
     const offset = circumference - (value / 100) * circumference;
 
     return (
-        <svg viewBox={`0 0 ${size} ${size}`} className={styles.progressRing}>
+        <svg
+            viewBox={`0 0 ${size} ${size}`}
+            className={styles.progressRing}
+            role="img"
+            aria-label={`${label}, ${value}% proficiency`}
+        >
             <circle
                 cx={size / 2}
                 cy={size / 2}
@@ -174,12 +180,19 @@ export default function Skills({ data }: SkillsProps) {
                 >
                     {filtered.map((skill, i) => {
                         const color = brandColors[skill.icon] || '#7c3aed';
+                        const Icon = iconMap[skill.icon] || SiReact;
                         return (
                             <Reveal key={skill._id} className={styles.skillCard} delay={i * 0.05}>
                                 <div className={styles.skillRingWrapper}>
-                                    <CircularProgress value={skill.proficiency} color={color} size={90} strokeWidth={3} />
-                                    <div className={styles.skillIconCenter} style={{ color }}>
-                                        {iconMap[skill.icon] || <SiReact />}
+                                    <CircularProgress
+                                        value={skill.proficiency}
+                                        color={color}
+                                        size={90}
+                                        strokeWidth={3}
+                                        label={skill.name}
+                                    />
+                                    <div className={styles.skillIconCenter} style={{ color }} aria-hidden>
+                                        <Icon aria-hidden focusable="false" role="presentation" />
                                     </div>
                                 </div>
                                 <h3 className={styles.skillName}>{skill.name}</h3>

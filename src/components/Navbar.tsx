@@ -18,7 +18,7 @@ export default function Navbar() {
         <nav className={styles.navbar}>
             <div className={`container ${styles.navContainer}`}>
                 <a href="#home" className={styles.logo}>
-                    {/* Local file — avoid next/image optimizer competing with LCP. */}
+                    {/* Local 128² file (38 CSS px, 2–3× retina) — skip next/image on LCP. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={LOGO_SRC}
