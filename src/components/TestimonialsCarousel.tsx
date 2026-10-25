@@ -122,7 +122,7 @@ export default function TestimonialsCarousel({ data }: TestimonialsCarouselProps
                                 <div className={styles.author}>
                                     <AuthorAvatar name={item.name} src={item.avatarUrl} />
                                     <div>
-                                        <h4 className={styles.authorName}>{item.name}</h4>
+                                        <h3 className={styles.authorName}>{item.name}</h3>
                                         <p className={styles.authorRole}>
                                             {item.role} at {item.company}
                                         </p>

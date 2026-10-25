@@ -182,7 +182,7 @@ export default function Skills({ data }: SkillsProps) {
                                         {iconMap[skill.icon] || <SiReact />}
                                     </div>
                                 </div>
-                                <h4 className={styles.skillName}>{skill.name}</h4>
+                                <h3 className={styles.skillName}>{skill.name}</h3>
                                 <div className={styles.skillMeta}>
                                     <span className={styles.skillProficiency} style={{ color }}>{skill.proficiency}%</span>
                                     <span className={styles.skillCategory}>{skill.category}</span>

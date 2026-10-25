@@ -47,7 +47,7 @@ export default function Footer({ contactData }: FooterProps) {
                     </div>
 
                     <div className={styles.footerLinks}>
-                        <h4 className={styles.footerHeading}>Quick Links</h4>
+                        <h3 className={styles.footerHeading}>Quick Links</h3>
                         <a href="#about">About</a>
                         <a href="#projects">Projects</a>
                         <a href="#skills">Skills</a>
@@ -55,7 +55,7 @@ export default function Footer({ contactData }: FooterProps) {
                     </div>
 
                     <div className={styles.footerSocials}>
-                        <h4 className={styles.footerHeading}>Connect</h4>
+                        <h3 className={styles.footerHeading}>Connect</h3>
                         <div className={styles.socialRow}>
                             {socials.map((social) => (
                                 <a
