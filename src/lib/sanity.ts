@@ -39,6 +39,56 @@ export function optimizedImageUrl(
   return image.url();
 }
 
+/**
+ * Hero photo CSS sizes: 168px (≤480), 200px (≤900), 380px desktop.
+ * Srcset caps at 500 because the Sanity asset is 500²; 2× of the mobile slot is ~336–400.
+ */
+export const HERO_PROFILE_WIDTHS = [320, 400, 500] as const;
+export const HERO_PROFILE_SIZES =
+  '(max-width: 480px) 168px, (max-width: 900px) 200px, 380px';
+
+/** Rewrite w/h on an existing Sanity CDN URL so we can build a srcset without a new asset. */
+export function withCdnSize(url: string, width: number, height = width): string {
+  if (!/cdn\.sanity\.io/i.test(url)) return url;
+  let next = url;
+  if (/[?&]w=\d+/.test(next)) {
+    next = next.replace(/([?&])w=\d+/, `$1w=${width}`);
+  } else {
+    next += `${next.includes('?') ? '&' : '?'}w=${width}`;
+  }
+  if (/[?&]h=\d+/.test(next)) {
+    next = next.replace(/([?&])h=\d+/, `$1h=${height}`);
+  } else {
+    next += `&h=${height}`;
+  }
+  return next;
+}
+
+export function cdnImageSrcSet(url: string, widths: readonly number[]): string {
+  return widths.map((width) => `${withCdnSize(url, width)} ${width}w`).join(', ');
+}
+
+export function profileImageSources(
+  image: SanityImage | undefined,
+  fallbackUrl: string,
+): { src: string; srcSet: string; sizes: string } {
+  const widths = HERO_PROFILE_WIDTHS;
+  if (image?.asset) {
+    return {
+      src: optimizedImageUrl(image, 400, 400),
+      srcSet: widths
+        .map((width) => `${optimizedImageUrl(image, width, width)} ${width}w`)
+        .join(', '),
+      sizes: HERO_PROFILE_SIZES,
+    };
+  }
+  return {
+    src: withCdnSize(fallbackUrl, 400),
+    srcSet: cdnImageSrcSet(fallbackUrl, widths),
+    sizes: HERO_PROFILE_SIZES,
+  };
+}
+
 /** CDN URL when a CMS image asset is present; otherwise undefined (letter fallback). */
 export function cmsImageUrl(
   image: SanityImage | undefined,

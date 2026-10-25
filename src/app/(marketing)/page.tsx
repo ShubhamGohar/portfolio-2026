@@ -16,6 +16,7 @@ import {
   projectsQuery, skillsQuery, experienceQuery, testimonialsQuery, contactQuery,
   siteSettingsQuery,
   optimizedImageUrl,
+  profileImageSources,
 } from '@/lib/sanity';
 
 import {
@@ -53,10 +54,8 @@ export const revalidate = 60;
 
 const isSanityConfigured = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== 'demo';
 
-function resolveProfileImageUrl(hero: HeroData) {
-  return hero.profileImage?.asset
-    ? optimizedImageUrl(hero.profileImage, 500, 500)
-    : fallbackProfileImageUrl;
+function resolveProfileImage(hero: HeroData) {
+  return profileImageSources(hero.profileImage, fallbackProfileImageUrl);
 }
 
 function withProjectImageUrls(projects: Project[]): Project[] {
@@ -86,10 +85,13 @@ async function getData() {
         ]);
 
       const resolvedHero = withHeroFallbacks(hero);
+      const profileImage = resolveProfileImage(resolvedHero);
 
       return {
         hero: resolvedHero,
-        profileImageUrl: resolveProfileImageUrl(resolvedHero),
+        profileImageUrl: profileImage.src,
+        profileImageSrcSet: profileImage.srcSet,
+        profileImageSizes: profileImage.sizes,
         about: withAboutFallbacks(about),
         stats: withStatsFallbacks(stats),
         services: withServicesFallbacks(services),
@@ -105,9 +107,13 @@ async function getData() {
     }
   }
 
+  const profileImage = profileImageSources(undefined, fallbackProfileImageUrl);
+
   return {
     hero: fallbackHero,
-    profileImageUrl: fallbackProfileImageUrl,
+    profileImageUrl: profileImage.src,
+    profileImageSrcSet: profileImage.srcSet,
+    profileImageSizes: profileImage.sizes,
     about: fallbackAbout,
     stats: fallbackStats,
     services: fallbackServices,
@@ -127,7 +133,12 @@ export default async function Home() {
     <>
       <Navbar />
       <main>
-        <Hero data={data.hero} profileImageUrl={data.profileImageUrl} />
+        <Hero
+          data={data.hero}
+          profileImageUrl={data.profileImageUrl}
+          profileImageSrcSet={data.profileImageSrcSet}
+          profileImageSizes={data.profileImageSizes}
+        />
         <About data={data.about} />
         <Stats data={data.stats} />
         <Services data={data.services} />
