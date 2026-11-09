@@ -16,16 +16,23 @@ function canvas(w: number, h: number) {
   return [c, c.getContext('2d')!] as const;
 }
 
-function toTexture(c: HTMLCanvasElement, color = true, repeat?: [number, number]) {
+function toTexture(c: HTMLCanvasElement, color = true, repeat?: [number, number], anisotropy = 1) {
   const t = new THREE.CanvasTexture(c);
   if (color) t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
+  t.anisotropy = anisotropy;
+  t.generateMipmaps = true;
+  t.minFilter = THREE.LinearMipmapLinearFilter;
   if (repeat) {
     t.wrapS = THREE.RepeatWrapping;
     t.wrapT = THREE.RepeatWrapping;
     t.repeat.set(repeat[0], repeat[1]);
   }
   return t;
+}
+
+export function setAnisotropy(tex: THREE.Texture, n: number) {
+  tex.anisotropy = n;
+  tex.needsUpdate = true;
 }
 
 function speckle(ctx: CanvasRenderingContext2D, w: number, h: number, count: number, alpha: number, seed: number, dark = true) {
@@ -38,8 +45,8 @@ function speckle(ctx: CanvasRenderingContext2D, w: number, h: number, count: num
 }
 
 /** Honey-oak planks: colour map plus a grain map used for bump and roughness. */
-export function oakFloor() {
-  const W = 512;
+export function oakFloor(size = 512, anisotropy = 1) {
+  const W = size;
   const [c, ctx] = canvas(W, W);
   const [g, gx] = canvas(W, W);
   const r = rng(7);
@@ -84,12 +91,12 @@ export function oakFloor() {
       cx2.fillRect(i * pw, 0, 1.5, W);
     }
   }
-  speckle(ctx, W, W, 2500, 0.12, 3);
-  return { map: toTexture(c, true, [1.5, 1.5]), grain: toTexture(g, false, [1.5, 1.5]) };
+  speckle(ctx, W, W, Math.round(2500 * (W / 512) ** 2), 0.12, 3);
+  return { map: toTexture(c, true, [1.5, 1.5], anisotropy), grain: toTexture(g, false, [1.5, 1.5], anisotropy) };
 }
 
-export function plaster(base: string) {
-  const W = 256;
+export function plaster(base: string, size = 256, anisotropy = 1) {
+  const W = size;
   const [c, ctx] = canvas(W, W);
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, W, W);
@@ -98,14 +105,14 @@ export function plaster(base: string) {
   const [g, gx] = canvas(W, W);
   gx.fillStyle = '#808080';
   gx.fillRect(0, 0, W, W);
-  speckle(gx, W, W, 7000, 0.35, 13);
-  speckle(gx, W, W, 4000, 0.3, 14, false);
-  return { map: toTexture(c, true, [3, 3]), grain: toTexture(g, false, [3, 3]) };
+  speckle(gx, W, W, Math.round(7000 * (W / 256) ** 2), 0.35, 13);
+  speckle(gx, W, W, Math.round(4000 * (W / 256) ** 2), 0.3, 14, false);
+  return { map: toTexture(c, true, [3, 3], anisotropy), grain: toTexture(g, false, [3, 3], anisotropy) };
 }
 
 /** Woven wool rug with a rust border band. */
-export function rugTexture() {
-  const W = 512;
+export function rugTexture(size = 512, anisotropy = 1) {
+  const W = size;
   const [c, ctx] = canvas(W, W);
   ctx.fillStyle = '#e4d7c3';
   ctx.fillRect(0, 0, W, W);
@@ -118,36 +125,37 @@ export function rugTexture() {
     ctx.fillStyle = `rgba(255,250,240,${0.04 + r() * 0.05})`;
     ctx.fillRect(x, 0, 1, W);
   }
+  const s = W / 512;
   ctx.strokeStyle = '#b3573b';
-  ctx.lineWidth = 22;
-  ctx.strokeRect(40, 40, W - 80, W - 80);
+  ctx.lineWidth = Math.max(2, 22 * s);
+  ctx.strokeRect(40 * s, 40 * s, W - 80 * s, W - 80 * s);
   ctx.strokeStyle = 'rgba(179,87,59,0.55)';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(78, 78, W - 156, W - 156);
-  speckle(ctx, W, W, 6000, 0.08, 22);
+  ctx.lineWidth = Math.max(1, 4 * s);
+  ctx.strokeRect(78 * s, 78 * s, W - 156 * s, W - 156 * s);
+  speckle(ctx, W, W, Math.round(6000 * (W / 512) ** 2), 0.08, 22);
   const [g, gx] = canvas(W, W);
   gx.drawImage(c, 0, 0);
-  return { map: toTexture(c), grain: toTexture(g, false) };
+  return { map: toTexture(c, true, undefined, anisotropy), grain: toTexture(g, false, undefined, anisotropy) };
 }
 
-export function cork() {
-  const W = 256;
+export function cork(size = 256, anisotropy = 1) {
+  const W = size;
   const [c, ctx] = canvas(W, W);
   ctx.fillStyle = '#b48a5e';
   ctx.fillRect(0, 0, W, W);
   const r = rng(31);
-  for (let i = 0; i < 2200; i += 1) {
+  for (let i = 0; i < Math.round(2200 * (W / 256) ** 2); i += 1) {
     const d = r();
     ctx.fillStyle = d > 0.5 ? `rgba(90,60,30,${0.2 + r() * 0.3})` : `rgba(230,190,140,${0.15 + r() * 0.25})`;
     ctx.beginPath();
     ctx.arc(r() * W, r() * W, 0.6 + r() * 1.8, 0, Math.PI * 2);
     ctx.fill();
   }
-  return toTexture(c);
+  return toTexture(c, true, undefined, anisotropy);
 }
 
-export function fabric(base: string) {
-  const W = 128;
+export function fabric(base: string, size = 128, anisotropy = 1) {
+  const W = size;
   const [c, ctx] = canvas(W, W);
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, W, W);
@@ -155,8 +163,8 @@ export function fabric(base: string) {
     ctx.fillStyle = `rgba(0,0,0,${y % 4 ? 0.05 : 0.1})`;
     ctx.fillRect(0, y, W, 1);
   }
-  speckle(ctx, W, W, 1500, 0.1, 41);
-  return toTexture(c, true, [4, 4]);
+  speckle(ctx, W, W, Math.round(1500 * (W / 128) ** 2), 0.1, 41);
+  return toTexture(c, true, [4, 4], anisotropy);
 }
 
 /** Abstract prints: no text, no project names. */

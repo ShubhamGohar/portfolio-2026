@@ -13,14 +13,36 @@
   font-family: var(--lab-body), system-ui, sans-serif;
 }
 
+.poster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+
+.poster img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.posterGone {
+  opacity: 0;
+}
+
 .canvas {
   position: absolute;
   inset: 0;
+  z-index: 1;
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transition: opacity 0.7s ease;
 }
 
-.ready .canvas {
+.canvasOn {
   opacity: 1;
 }
 
@@ -224,9 +246,14 @@
 }
 
 .indexRow:hover .indexArrow,
-.indexRow:focus-visible .indexArrow {
+.indexRow:focus-visible .indexArrow,
+.indexHot .indexArrow {
   color: var(--rust);
   transform: translateX(4px);
+}
+
+.indexHot .indexName {
+  color: #e7b394;
 }
 
 .indexRow:focus-visible {
@@ -263,7 +290,7 @@
   transition: opacity 0.8s ease 0.6s;
 }
 
-.ready .markers {
+.lit .markers {
   opacity: 1;
 }
 
@@ -345,8 +372,13 @@
 }
 
 .marker:hover .markerRing::before,
-.marker:focus-visible .markerRing::before {
+.marker:focus-visible .markerRing::before,
+.markerHot .markerRing::before {
   transform: scale(1.12);
+}
+
+.markerHot .markerRing::before {
+  background: #e7b394;
 }
 
 .marker:focus-visible {
@@ -398,8 +430,40 @@
 .cardOn {
   opacity: 1;
   transform: translate(0, -50%);
-  transition-delay: 0.45s;
+  transition-delay: 0.35s;
   pointer-events: auto;
+}
+
+.cardInner > * {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.cardOn .cardInner > * {
+  animation: cardIn 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.cardOn .cardInner > *:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.cardOn .cardInner > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.cardOn .cardInner > *:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.cardOn .cardInner > *:nth-child(4) {
+  animation-delay: 0.22s;
+}
+.cardOn .cardInner > *:nth-child(5) {
+  animation-delay: 0.28s;
+}
+
+@keyframes cardIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .cardHead {
@@ -643,7 +707,8 @@
     color: rgba(29, 30, 33, 0.45);
   }
 
-  .dockItem:active {
+  .dockItem:active,
+  .dockHot {
     background: rgba(29, 30, 33, 0.06);
   }
 
@@ -673,5 +738,25 @@
 @media (prefers-reduced-motion: reduce) {
   .markerRing::after {
     animation: none;
+  }
+
+  .poster,
+  .canvas,
+  .card {
+    transition: none;
+  }
+
+  .posterGone {
+    opacity: 0;
+  }
+
+  .canvasOn {
+    opacity: 1;
+  }
+
+  .cardOn .cardInner > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
