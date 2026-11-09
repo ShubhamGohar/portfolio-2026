@@ -18,7 +18,7 @@ const body = Inter_Tight({
 
 const serif = Fraunces({
   subsets: ['latin'],
-  weight: ['400', '600'],
+  axes: ['opsz'],
   style: ['normal', 'italic'],
   variable: '--lab-serif',
   display: 'swap',
