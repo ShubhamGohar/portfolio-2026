@@ -1,0 +1,255 @@
+.root {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  color: #fbf1e2;
+  background:
+    radial-gradient(50% 55% at 62% 55%, rgba(255, 150, 110, 0.22) 0%, rgba(255, 150, 110, 0) 70%),
+    radial-gradient(80% 80% at 20% 10%, #2b2550 0%, #16132a 70%);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.canvasReady {
+  opacity: 1;
+}
+
+.bar {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px clamp(20px, 4vw, 60px);
+}
+
+.brand {
+  display: grid;
+  font-family: var(--lab-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.brandRole {
+  font-family: var(--lab-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(251, 241, 226, 0.6);
+}
+
+.tag {
+  padding: 8px 14px;
+  border: 1px solid rgba(251, 241, 226, 0.18);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(251, 241, 226, 0.78);
+}
+
+.hero {
+  position: absolute;
+  z-index: 2;
+  left: clamp(20px, 5vw, 80px);
+  bottom: clamp(40px, 12vh, 120px);
+  max-width: 440px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+}
+
+.heroOn {
+  opacity: 1;
+  transform: none;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--lab-serif);
+  font-size: clamp(2.8rem, 5.4vw, 5rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.title em {
+  font-style: italic;
+  color: #ffb08f;
+}
+
+.lede {
+  margin: 20px 0 0;
+  font-size: 1.04rem;
+  line-height: 1.55;
+  color: rgba(251, 241, 226, 0.76);
+}
+
+.spots {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  margin: -22px 0 0 -22px;
+  padding: 0 14px 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(22, 19, 42, 0.62);
+  color: #fbf1e2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 0 1px rgba(251, 241, 226, 0.16) inset, 0 10px 24px -12px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 0.3s, background 0.3s;
+  will-change: transform;
+}
+
+.spot:hover,
+.spot:focus-visible {
+  background: rgba(255, 122, 92, 0.92);
+  outline: none;
+}
+
+.spotDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff7a5c;
+  box-shadow: 0 0 0 4px rgba(255, 122, 92, 0.25);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.spot:hover .spotDot,
+.spotOn .spotDot {
+  background: #fbf1e2;
+}
+
+.spotOn {
+  background: rgba(255, 122, 92, 0.92);
+}
+
+.spotDim {
+  opacity: 0.35;
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 7px rgba(255, 122, 92, 0.08);
+  }
+}
+
+.card {
+  position: absolute;
+  z-index: 3;
+  left: clamp(20px, 5vw, 80px);
+  bottom: clamp(40px, 12vh, 120px);
+  width: min(400px, calc(100vw - 40px));
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(251, 241, 226, 0.95);
+  color: #1d1b33;
+  box-shadow: 0 30px 70px -24px rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease 0.35s, transform 0.45s ease 0.35s;
+  pointer-events: none;
+}
+
+.cardOn {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.cardKicker {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #d9583b;
+}
+
+.cardTitle {
+  margin: 0 0 10px;
+  font-family: var(--lab-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.cardBody {
+  margin: 0;
+  line-height: 1.55;
+  color: #47435f;
+}
+
+.back {
+  min-height: 44px;
+  margin-top: 18px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #1d1b33;
+  color: #fbf1e2;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .tag {
+    display: none;
+  }
+
+  .hero {
+    top: 96px;
+    bottom: auto;
+    right: 20px;
+  }
+
+  .title {
+    font-size: clamp(2.5rem, 12vw, 3.2rem);
+  }
+
+  .lede {
+    font-size: 0.98rem;
+  }
+
+  .card {
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: auto;
+    padding: 22px;
+  }
+
+  .spot {
+    padding: 0 12px 0 10px;
+    font-size: 0.8rem;
+  }
+}
