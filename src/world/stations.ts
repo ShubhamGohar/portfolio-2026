@@ -218,18 +218,26 @@ export function buildStations(data: PortfolioData): Station[] {
     });
   }
 
+  const phoneHref = data.contact.phone?.replace(/[^\d+]/g, '');
+
   stations.push({
     id: 'contact',
     name: 'Contact',
     hash: '#contact',
     hint: data.contact.email,
-    title: data.contact.email,
-    facts: [data.contact.email, data.contact.phone].filter((value): value is string => Boolean(value)),
+    title: 'Contact',
+    facts: [],
     body: data.contact.address,
     sceneIndex: 7,
     links: [
+      ...(data.contact.email
+        ? [{ label: data.contact.email, href: `mailto:${data.contact.email}` }]
+        : []),
+      ...(phoneHref
+        ? [{ label: data.contact.phone, href: `tel:${phoneHref}` }]
+        : []),
       ...(data.contact.socials ?? []).map((social) => ({
-        label: social.platform,
+        label: social.platform.charAt(0).toUpperCase() + social.platform.slice(1),
         href: social.url,
         external: true,
       })),
