@@ -33,9 +33,14 @@ export function optimizedImageUrl(
   width: number,
   height?: number,
   quality = 80,
+  fit?: 'crop' | 'max' | 'clip' | 'min',
 ) {
   let image = urlFor(source).width(width).format('webp').quality(quality);
   if (height) image = image.height(height);
+  if (fit) {
+    image = image.fit(fit);
+    if (fit === 'crop') image = image.crop('top');
+  }
   return image.url();
 }
 

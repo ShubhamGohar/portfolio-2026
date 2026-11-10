@@ -1,0 +1,160 @@
+.nav,
+.menu,
+.fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.nav {
+  margin-left: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-glass);
+  font-size: 0.75rem;
+}
+
+.nav:hover,
+.nav:focus-visible {
+  border-color: var(--border-color-hover);
+  background: var(--bg-glass-hover);
+}
+
+.menu {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.menu:hover,
+.menu:focus-visible {
+  color: var(--text-primary);
+  background: var(--bg-glass);
+}
+
+.fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 900;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  background: rgba(10, 10, 15, 0.92);
+  box-shadow: var(--shadow-md);
+  font-size: 0.72rem;
+}
+
+.fab:hover,
+.fab:focus-visible {
+  border-color: var(--border-color-hover);
+}
+
+@media (min-width: 901px) {
+  .fab,
+  .menu {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav {
+    display: none;
+  }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: rgba(10, 10, 15, 0.72);
+}
+
+.dialog {
+  width: min(420px, 100%);
+  max-height: min(80dvh, 720px);
+  overflow: auto;
+  padding: 24px 20px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: #111118;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.dialogHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dialogTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.dialogLede {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.list a:hover,
+.list a:focus-visible {
+  background: var(--bg-glass-hover);
+}
