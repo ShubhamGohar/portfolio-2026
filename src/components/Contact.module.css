@@ -174,3 +174,95 @@ a.infoValue:hover {
         grid-template-columns: 1fr;
     }
 }
+
+.studioForm {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+}
+
+.studioForm .formGroup {
+    margin-bottom: 0;
+}
+
+.studioForm .formLabel {
+    margin-bottom: 6px;
+    color: rgba(29, 30, 33, 0.62);
+    font-size: 0.78rem;
+}
+
+.studioForm .formInput {
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid rgba(29, 30, 33, 0.14);
+    border-radius: 12px;
+    background: #fff;
+    color: #1d1e21;
+    font-family: inherit;
+    font-size: 0.92rem;
+}
+
+.studioForm .formInput::placeholder {
+    color: rgba(29, 30, 33, 0.42);
+}
+
+.studioForm .formInput:focus {
+    border-color: #c8603f;
+    box-shadow: 0 0 0 3px rgba(200, 96, 63, 0.16);
+}
+
+.studioForm .formTextarea {
+    min-height: 88px;
+    max-height: 120px;
+    resize: none;
+}
+
+@media (max-width: 760px) {
+    .studioForm {
+        gap: 8px;
+    }
+
+    .studioForm .formTextarea {
+        min-height: 72px;
+        max-height: 88px;
+    }
+}
+
+.studioSubmit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 4px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: #1d1e21;
+    color: #f4eee5;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.studioSubmit:hover,
+.studioSubmit:focus-visible {
+    background: #c8603f;
+}
+
+.studioSubmit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.studioForm .errorMsg,
+.studioForm .successMsg {
+    margin-top: 0;
+}

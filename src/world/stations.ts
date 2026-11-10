@@ -22,8 +22,9 @@ export interface StationItem {
 
 export interface StationLink {
   label: string;
-  href: string;
+  href?: string;
   external?: boolean;
+  action?: 'contact-form';
 }
 
 export interface Station {
@@ -101,7 +102,7 @@ export function buildStations(data: PortfolioData): Station[] {
       ...(data.hero.resumeURL
         ? [{ label: 'Download CV', href: data.hero.resumeURL, external: true }]
         : []),
-      { label: 'Let’s Talk', href: '/#contact' },
+      { label: 'Let’s Talk', action: 'contact-form' },
     ],
   });
 
@@ -247,7 +248,7 @@ export function buildStations(data: PortfolioData): Station[] {
         href: social.url,
         external: true,
       })),
-      { label: 'Use the form', href: '/#contact' },
+      { label: 'Use the form', action: 'contact-form' },
     ],
   });
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import ContactForm from '@/components/ContactForm';
 import { shouldSkipWebGL } from '@/world/gate';
 import type { Station, StationItem, StudioIntro } from '@/world/stations';
 import styles from './world.module.css';
@@ -30,6 +31,7 @@ export default function WorldView({
   const markerRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [active, setActive] = useState<number | null>(null);
   const [itemIndex, setItemIndex] = useState(0);
+  const [showForm, setShowForm] = useState(false);
   const [hover, setHover] = useState<number | null>(null);
   const [lit, setLit] = useState(false);
   const [full, setFull] = useState(false);
@@ -94,8 +96,18 @@ export default function WorldView({
   const select = useCallback((index: number | null) => {
     setActive(index);
     setItemIndex(0);
+    setShowForm(false);
     const sceneIndex = index === null ? null : stations[index]?.sceneIndex ?? null;
     handleRef.current?.focus(sceneIndex);
+  }, [stations]);
+
+  const openContactForm = useCallback(() => {
+    const index = stations.findIndex((station) => station.id === 'contact');
+    if (index < 0) return;
+    setActive(index);
+    setItemIndex(0);
+    setShowForm(true);
+    handleRef.current?.focus(stations[index].sceneIndex);
   }, [stations]);
 
   useEffect(() => {
@@ -105,6 +117,10 @@ export default function WorldView({
         else leaveTo2D();
         return;
       }
+      const typing =
+        event.target instanceof HTMLElement &&
+        Boolean(event.target.closest('input, textarea, select'));
+      if (typing) return;
       if (!stations.length) return;
       const current = active === null ? null : stations[active];
       const gallery = current?.variant === 'gallery' ? current.items : undefined;
@@ -241,8 +257,8 @@ export default function WorldView({
       )}
 
       <aside
-        className={`${styles.card} ${spot ? styles.cardOn : ''} ${spot?.variant === 'gallery' ? styles.cardGallery : ''}`}
-        aria-live="polite"
+        className={`${styles.card} ${spot ? styles.cardOn : ''} ${spot?.variant === 'gallery' ? styles.cardGallery : ''} ${showForm ? styles.cardForm : ''}`}
+        aria-live={showForm ? 'off' : 'polite'}
         aria-hidden={!spot}
       >
         {spot && active !== null && (
@@ -255,6 +271,14 @@ export default function WorldView({
             </div>
             {spot.variant === 'gallery' && spot.items?.length ? (
               <ProjectGallery items={spot.items} index={itemIndex} onIndex={setItemIndex} />
+            ) : showForm && spot.id === 'contact' ? (
+              <>
+                <h2 className={styles.cardTitle}>{spot.title}</h2>
+                <ContactForm variant="studio" idPrefix="studio-" />
+                <button type="button" className={styles.ghost} onClick={() => setShowForm(false)}>
+                  ← Details
+                </button>
+              </>
             ) : (
               <>
                 <h2 className={styles.cardTitle}>{spot.title}</h2>
@@ -307,16 +331,26 @@ export default function WorldView({
                 )}
                 {spot.links && spot.links.length > 0 && (
                   <div className={styles.links}>
-                    {spot.links.map((link) => (
-                      <a
-                        key={link.href + link.label}
-                        href={link.href}
-                        target={link.external ? '_blank' : undefined}
-                        rel={link.external ? 'noopener noreferrer' : undefined}
-                      >
-                        {link.label}
-                      </a>
-                    ))}
+                    {spot.links.map((link) =>
+                      link.action === 'contact-form' ? (
+                        <button
+                          key={link.label}
+                          type="button"
+                          onClick={openContactForm}
+                        >
+                          {link.label}
+                        </button>
+                      ) : link.href ? (
+                        <a
+                          key={link.href + link.label}
+                          href={link.href}
+                          target={link.external ? '_blank' : undefined}
+                          rel={link.external ? 'noopener noreferrer' : undefined}
+                        >
+                          {link.label}
+                        </a>
+                      ) : null,
+                    )}
                   </div>
                 )}
               </>
