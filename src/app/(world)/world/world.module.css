@@ -452,6 +452,11 @@
   max-width: min(460px, calc(100vw - 32px));
 }
 
+.cardForm {
+  width: min(420px, calc(100vw - 32px));
+  max-width: min(420px, calc(100vw - 32px));
+}
+
 .cardInner {
   display: flex;
   flex-direction: column;
@@ -775,7 +780,8 @@
   margin: 16px 0 0;
 }
 
-.links a {
+.links a,
+.links button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -786,7 +792,9 @@
   padding: 8px 14px;
   border: 1px solid rgba(29, 30, 33, 0.14);
   border-radius: 999px;
+  background: none;
   color: var(--ink);
+  font-family: inherit;
   font-size: 0.82rem;
   font-weight: 600;
   line-height: 1.25;
@@ -796,10 +804,13 @@
   overflow-wrap: anywhere;
   word-break: break-word;
   white-space: normal;
+  cursor: pointer;
 }
 
 .links a:hover,
-.links a:focus-visible {
+.links a:focus-visible,
+.links button:hover,
+.links button:focus-visible {
   border-color: var(--ink);
   background: rgba(29, 30, 33, 0.06);
 }
@@ -1020,7 +1031,8 @@
     font-size: clamp(1.25rem, 6vw, 1.65rem);
   }
 
-  .cardGallery {
+  .cardGallery,
+  .cardForm {
     width: auto;
     max-width: calc(100vw - 20px);
     padding: 18px 18px 12px;

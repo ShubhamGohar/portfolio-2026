@@ -3,10 +3,18 @@
 import { useState } from 'react';
 import styles from './Contact.module.css';
 
-export default function ContactForm() {
+export default function ContactForm({
+    variant = 'marketing',
+    idPrefix = '',
+}: {
+    variant?: 'marketing' | 'studio';
+    idPrefix?: string;
+}) {
     const [formData, setFormData] = useState({ name: '', email: '', message: '', website: '' });
     const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [errorMsg, setErrorMsg] = useState('');
+    const fieldId = (name: string) => `${idPrefix}${name}`;
+    const studio = variant === 'studio';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,37 +45,42 @@ export default function ContactForm() {
     };
 
     return (
-        <form className={`glass-card ${styles.contactForm}`} onSubmit={handleSubmit}>
+        <form
+            className={studio ? styles.studioForm : `glass-card ${styles.contactForm}`}
+            onSubmit={handleSubmit}
+        >
             <div className={styles.formGroup}>
-                <label htmlFor="name" className={styles.formLabel}>Name</label>
+                <label htmlFor={fieldId('name')} className={styles.formLabel}>Name</label>
                 <input
-                    id="name"
+                    id={fieldId('name')}
                     type="text"
                     className={styles.formInput}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Your name"
+                    autoComplete="name"
                     required
                 />
             </div>
 
             <div className={styles.formGroup}>
-                <label htmlFor="email" className={styles.formLabel}>Email</label>
+                <label htmlFor={fieldId('email')} className={styles.formLabel}>Email</label>
                 <input
-                    id="email"
+                    id={fieldId('email')}
                     type="email"
                     className={styles.formInput}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="your@email.com"
+                    autoComplete="email"
                     required
                 />
             </div>
 
             <div className={styles.honeypot} aria-hidden="true">
-                <label htmlFor="website">Website</label>
+                <label htmlFor={fieldId('website')}>Website</label>
                 <input
-                    id="website"
+                    id={fieldId('website')}
                     type="text"
                     name="website"
                     tabIndex={-1}
@@ -78,21 +91,21 @@ export default function ContactForm() {
             </div>
 
             <div className={styles.formGroup}>
-                <label htmlFor="message" className={styles.formLabel}>Message</label>
+                <label htmlFor={fieldId('message')} className={styles.formLabel}>Message</label>
                 <textarea
-                    id="message"
+                    id={fieldId('message')}
                     className={`${styles.formInput} ${styles.formTextarea}`}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell me about your project..."
-                    rows={5}
+                    rows={studio ? 3 : 5}
                     required
                 />
             </div>
 
             <button
                 type="submit"
-                className={`btn btn--primary ${styles.submitBtn}`}
+                className={studio ? styles.studioSubmit : `btn btn--primary ${styles.submitBtn}`}
                 disabled={status === 'sending'}
             >
                 {status === 'sending' ? 'Sending...' :
