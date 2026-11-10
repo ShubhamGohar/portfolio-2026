@@ -16,6 +16,8 @@ export interface StationItem {
   text?: string;
   href?: string;
   imageUrl?: string;
+  tags?: string[];
+  extraLinks?: StationLink[];
 }
 
 export interface StationLink {
@@ -37,6 +39,7 @@ export interface Station {
   imageAlt?: string;
   items?: StationItem[];
   links?: StationLink[];
+  variant?: 'gallery';
 }
 
 export interface StudioIntro {
@@ -144,19 +147,22 @@ export function buildStations(data: PortfolioData): Station[] {
       name: 'Projects',
       hash: '#projects',
       hint: data.projects[0].title,
-      title: data.projects[0].title,
-      facts: data.projects
-        .map((project) => project.category)
-        .filter((value, index, all) => value && all.indexOf(value) === index)
-        .slice(0, 4),
-      body: data.projects[0].description,
+      title: 'Projects',
+      facts: [],
       sceneIndex: 3,
+      variant: 'gallery',
       items: data.projects.slice(0, 6).map((project) => ({
         heading: project.title,
-        meta: [project.category, ...(project.tags ?? []).slice(0, 3)].filter(Boolean).join(' · '),
+        meta: project.category,
         text: project.description,
-        href: project.projectUrl || project.codeUrl,
         imageUrl: project.imageUrl,
+        tags: (project.tags ?? []).slice(0, 4),
+        extraLinks: [
+          ...(project.projectUrl
+            ? [{ label: 'View project', href: project.projectUrl, external: true }]
+            : []),
+          ...(project.codeUrl ? [{ label: 'Code', href: project.codeUrl, external: true }] : []),
+        ],
       })),
     });
   }

@@ -72,11 +72,12 @@ function withProjectImageUrls(
   projects: Project[],
   width: number,
   height?: number,
+  fit?: 'crop' | 'max' | 'clip' | 'min',
 ): Project[] {
   return projects.map((project) => ({
     ...project,
     imageUrl: project.image
-      ? optimizedImageUrl(project.image, width, height)
+      ? optimizedImageUrl(project.image, width, height, 80, fit)
       : project.imageUrl,
   }));
 }
@@ -84,9 +85,11 @@ function withProjectImageUrls(
 export async function getPortfolioData(options?: {
   projectImageWidth?: number;
   projectImageHeight?: number;
+  projectImageFit?: 'crop' | 'max' | 'clip' | 'min';
 }): Promise<PortfolioData> {
   const projectImageWidth = options?.projectImageWidth ?? 680;
   const projectImageHeight = options?.projectImageHeight ?? 440;
+  const projectImageFit = options?.projectImageFit;
 
   if (isSanityConfigured) {
     try {
@@ -119,6 +122,7 @@ export async function getPortfolioData(options?: {
           projects?.length ? projects : fallbackProjects,
           projectImageWidth,
           projectImageHeight,
+          projectImageFit,
         ),
         skills: skills?.length ? skills : fallbackSkills,
         experience: withExperienceFallbacks(experience),
@@ -141,7 +145,12 @@ export async function getPortfolioData(options?: {
     about: fallbackAbout,
     stats: fallbackStats,
     services: fallbackServices,
-    projects: withProjectImageUrls(fallbackProjects, projectImageWidth, projectImageHeight),
+    projects: withProjectImageUrls(
+      fallbackProjects,
+      projectImageWidth,
+      projectImageHeight,
+      projectImageFit,
+    ),
     skills: fallbackSkills,
     experience: fallbackExperience,
     testimonials: fallbackTestimonials,

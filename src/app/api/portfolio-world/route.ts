@@ -6,8 +6,9 @@ export const revalidate = 60;
 
 export async function GET() {
   const data = await getPortfolioData({
-    projectImageWidth: 256,
-    projectImageHeight: 256,
+    projectImageWidth: 800,
+    projectImageHeight: 450,
+    projectImageFit: 'crop',
   });
 
   const payload = {

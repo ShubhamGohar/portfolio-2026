@@ -6,8 +6,9 @@ export const revalidate = 60;
 
 export default async function WorldPage() {
   const data = await getPortfolioData({
-    projectImageWidth: 256,
-    projectImageHeight: 256,
+    projectImageWidth: 800,
+    projectImageHeight: 450,
+    projectImageFit: 'crop',
   });
 
   return <WorldView intro={buildIntro(data)} stations={buildStations(data)} />;

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { shouldSkipWebGL } from '@/world/gate';
-import type { Station, StudioIntro } from '@/world/stations';
+import type { Station, StationItem, StudioIntro } from '@/world/stations';
 import styles from './world.module.css';
 
 type StudioHandle = {
@@ -29,6 +29,7 @@ export default function WorldView({
   const handleRef = useRef<StudioHandle | null>(null);
   const markerRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [active, setActive] = useState<number | null>(null);
+  const [itemIndex, setItemIndex] = useState(0);
   const [hover, setHover] = useState<number | null>(null);
   const [lit, setLit] = useState(false);
   const [full, setFull] = useState(false);
@@ -92,6 +93,7 @@ export default function WorldView({
 
   const select = useCallback((index: number | null) => {
     setActive(index);
+    setItemIndex(0);
     const sceneIndex = index === null ? null : stations[index]?.sceneIndex ?? null;
     handleRef.current?.focus(sceneIndex);
   }, [stations]);
@@ -104,6 +106,17 @@ export default function WorldView({
         return;
       }
       if (!stations.length) return;
+      const current = active === null ? null : stations[active];
+      const gallery = current?.variant === 'gallery' ? current.items : undefined;
+      if (gallery && gallery.length > 1 && (event.key === 'ArrowRight' || event.key === 'ArrowLeft')) {
+        event.preventDefault();
+        setItemIndex((index) =>
+          event.key === 'ArrowRight'
+            ? (index + 1) % gallery.length
+            : (index + gallery.length - 1) % gallery.length,
+        );
+        return;
+      }
       if (event.key === 'ArrowRight') {
         event.preventDefault();
         select(active === null ? 0 : (active + 1) % stations.length);
@@ -115,7 +128,7 @@ export default function WorldView({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [active, select, stations.length]);
+  }, [active, select, stations]);
 
   const spot = active === null ? null : stations[active];
   const showWebGL = !mapOnly;
@@ -227,7 +240,11 @@ export default function WorldView({
         </div>
       )}
 
-      <aside className={`${styles.card} ${spot ? styles.cardOn : ''}`} aria-live="polite" aria-hidden={!spot}>
+      <aside
+        className={`${styles.card} ${spot ? styles.cardOn : ''} ${spot?.variant === 'gallery' ? styles.cardGallery : ''}`}
+        aria-live="polite"
+        aria-hidden={!spot}
+      >
         {spot && active !== null && (
           <div key={spot.id} className={styles.cardInner}>
             <div className={styles.cardHead}>
@@ -236,67 +253,73 @@ export default function WorldView({
               </span>
               <span className={styles.cardSection}>{spot.name}</span>
             </div>
-            <h2 className={styles.cardTitle}>{spot.title}</h2>
-            {spot.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                className={styles.portrait}
-                src={spot.imageUrl}
-                alt={spot.imageAlt || ''}
-                width={72}
-                height={72}
-              />
-            ) : null}
-            {spot.facts.length > 0 && (
-              <ul className={styles.facts}>
-                {spot.facts.map((fact) => (
-                  <li key={fact}>{fact}</li>
-                ))}
-              </ul>
-            )}
-            {spot.body ? <p className={styles.cardBody}>{spot.body}</p> : null}
-            {spot.items && spot.items.length > 0 && (
-              <ul className={styles.itemList}>
-                {spot.items.map((item) => (
-                  <li key={`${item.heading}-${item.meta || ''}`}>
-                    {item.href ? (
-                      <a className={styles.itemLink} href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
-                        {item.imageUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img className={styles.itemThumb} src={item.imageUrl} alt="" width={256} height={160} />
-                        ) : null}
-                        <p className={styles.itemHeading}>{item.heading}</p>
-                        {item.meta ? <p className={styles.itemMeta}>{item.meta}</p> : null}
-                        {item.text ? <p className={styles.itemText}>{item.text}</p> : null}
+            {spot.variant === 'gallery' && spot.items?.length ? (
+              <ProjectGallery items={spot.items} index={itemIndex} onIndex={setItemIndex} />
+            ) : (
+              <>
+                <h2 className={styles.cardTitle}>{spot.title}</h2>
+                {spot.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    className={styles.portrait}
+                    src={spot.imageUrl}
+                    alt={spot.imageAlt || ''}
+                    width={72}
+                    height={72}
+                  />
+                ) : null}
+                {spot.facts.length > 0 && (
+                  <ul className={styles.facts}>
+                    {spot.facts.map((fact) => (
+                      <li key={fact}>{fact}</li>
+                    ))}
+                  </ul>
+                )}
+                {spot.body ? <p className={styles.cardBody}>{spot.body}</p> : null}
+                {spot.items && spot.items.length > 0 && (
+                  <ul className={styles.itemList}>
+                    {spot.items.map((item) => (
+                      <li key={`${item.heading}-${item.meta || ''}`}>
+                        {item.href ? (
+                          <a className={styles.itemLink} href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                            {item.imageUrl ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img className={styles.itemThumb} src={item.imageUrl} alt="" width={256} height={160} />
+                            ) : null}
+                            <p className={styles.itemHeading}>{item.heading}</p>
+                            {item.meta ? <p className={styles.itemMeta}>{item.meta}</p> : null}
+                            {item.text ? <p className={styles.itemText}>{item.text}</p> : null}
+                          </a>
+                        ) : (
+                          <>
+                            {item.imageUrl ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img className={styles.itemThumb} src={item.imageUrl} alt="" width={256} height={160} />
+                            ) : null}
+                            <p className={styles.itemHeading}>{item.heading}</p>
+                            {item.meta ? <p className={styles.itemMeta}>{item.meta}</p> : null}
+                            {item.text ? <p className={styles.itemText}>{item.text}</p> : null}
+                          </>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {spot.links && spot.links.length > 0 && (
+                  <div className={styles.links}>
+                    {spot.links.map((link) => (
+                      <a
+                        key={link.href + link.label}
+                        href={link.href}
+                        target={link.external ? '_blank' : undefined}
+                        rel={link.external ? 'noopener noreferrer' : undefined}
+                      >
+                        {link.label}
                       </a>
-                    ) : (
-                      <>
-                        {item.imageUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img className={styles.itemThumb} src={item.imageUrl} alt="" width={256} height={160} />
-                        ) : null}
-                        <p className={styles.itemHeading}>{item.heading}</p>
-                        {item.meta ? <p className={styles.itemMeta}>{item.meta}</p> : null}
-                        {item.text ? <p className={styles.itemText}>{item.text}</p> : null}
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {spot.links && spot.links.length > 0 && (
-              <div className={styles.links}>
-                {spot.links.map((link) => (
-                  <a
-                    key={link.href + link.label}
-                    href={link.href}
-                    target={link.external ? '_blank' : undefined}
-                    rel={link.external ? 'noopener noreferrer' : undefined}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
             <div className={styles.cardFoot}>
               <button type="button" className={styles.ghost} onClick={() => select(null)}>
@@ -306,7 +329,7 @@ export default function WorldView({
                 <button
                   type="button"
                   className={styles.round}
-                  aria-label="Previous"
+                  aria-label="Previous section"
                   onClick={() => select((active + stations.length - 1) % stations.length)}
                 >
                   ‹
@@ -340,6 +363,103 @@ export default function WorldView({
           </button>
         ))}
       </nav>
+    </div>
+  );
+}
+
+function ProjectGallery({
+  items,
+  index,
+  onIndex,
+}: {
+  items: StationItem[];
+  index: number;
+  onIndex: (next: number) => void;
+}) {
+  const item = items[index] ?? items[0];
+  const count = items.length;
+  const go = (dir: number) => onIndex((index + dir + count) % count);
+
+  return (
+    <div className={styles.gallery}>
+      <div className={styles.galleryStage}>
+        {item.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className={styles.galleryImage}
+            src={item.imageUrl}
+            alt={item.heading}
+            width={800}
+            height={450}
+          />
+        ) : (
+          <div className={styles.galleryFallback} aria-hidden="true" />
+        )}
+        {count > 1 ? (
+          <>
+            <button
+              type="button"
+              className={styles.galleryNav}
+              aria-label="Previous project"
+              onClick={() => go(-1)}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className={`${styles.galleryNav} ${styles.galleryNavNext}`}
+              aria-label="Next project"
+              onClick={() => go(1)}
+            >
+              ›
+            </button>
+          </>
+        ) : null}
+      </div>
+      <p className={styles.galleryKicker}>
+        {item.meta ? <span>{item.meta}</span> : <span>Featured</span>}
+        <span className={styles.galleryIndex}>
+          {pad(index + 1)} / {pad(count)}
+        </span>
+      </p>
+      <h2 className={styles.galleryTitle}>{item.heading}</h2>
+      {item.text ? <p className={styles.galleryBody}>{item.text}</p> : null}
+      {item.tags && item.tags.length > 0 ? (
+        <ul className={styles.galleryTags}>
+          {item.tags.map((tag) => (
+            <li key={tag}>{tag}</li>
+          ))}
+        </ul>
+      ) : null}
+      {item.extraLinks && item.extraLinks.length > 0 ? (
+        <div className={styles.links}>
+          {item.extraLinks.map((link) => (
+            <a
+              key={link.href + link.label}
+              href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      ) : null}
+      {count > 1 ? (
+        <div className={styles.galleryDots} role="tablist" aria-label="Projects">
+          {items.map((project, i) => (
+            <button
+              key={project.heading}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={project.heading}
+              className={`${styles.galleryDot} ${i === index ? styles.galleryDotOn : ''}`}
+              onClick={() => onIndex(i)}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
