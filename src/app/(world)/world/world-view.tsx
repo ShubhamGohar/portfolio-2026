@@ -35,11 +35,13 @@ export default function WorldView({
   const [hover, setHover] = useState<number | null>(null);
   const [lit, setLit] = useState(false);
   const [full, setFull] = useState(false);
+  const [ready, setReady] = useState(false);
   const [mapOnly, setMapOnly] = useState(false);
 
   useEffect(() => {
     if (shouldSkipWebGL()) {
       setMapOnly(true);
+      setReady(true);
       return;
     }
 
@@ -59,6 +61,9 @@ export default function WorldView({
           },
           onFullQuality: () => {
             if (!cancelled) setFull(true);
+          },
+          onReady: () => {
+            if (!cancelled) setReady(true);
           },
           onHover: (index) => {
             if (cancelled) return;
@@ -82,7 +87,10 @@ export default function WorldView({
       })
       .catch((err) => {
         console.error('studio scene failed to load', err);
-        if (!cancelled) setMapOnly(true);
+        if (!cancelled) {
+          setMapOnly(true);
+          setReady(true);
+        }
       });
 
     return () => {
@@ -190,6 +198,40 @@ export default function WorldView({
           </a>
         </div>
       </header>
+
+      <div
+        className={`${styles.loadCue} ${ready ? styles.loadCueGone : ''}`}
+        role="status"
+        aria-live="polite"
+        aria-hidden={ready}
+      >
+        <span className={styles.loadLamp} aria-hidden="true">
+          <svg viewBox="0 0 40 56" width="40" height="56">
+            <defs>
+              <linearGradient id="studioCone" x1="20" y1="22" x2="20" y2="56" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#e7b394" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="#c8603f" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path className={styles.loadCone} d="M14 24h12l10 32H4z" fill="url(#studioCone)" />
+            <rect x="19" y="4" width="2" height="10" rx="1" fill="#c69c62" />
+            <path d="M12 16h16l-3 10H15z" fill="#1d1e21" stroke="#c69c62" strokeWidth="1.2" />
+            <ellipse className={styles.loadGlow} cx="20" cy="28" rx="7" ry="4" fill="#e7b394" />
+          </svg>
+        </span>
+        <span className={styles.loadCopy}>
+          <span className={styles.loadEyebrow}>The Studio</span>
+          <span className={styles.loadLine}>
+            {ready ? 'The studio is ready' : lit ? 'Settling the room…' : 'Lighting the studio…'}
+          </span>
+          <span className={styles.loadTrack} aria-hidden="true">
+            <span
+              className={styles.loadFill}
+              style={{ width: ready ? '100%' : lit ? '72%' : '38%' }}
+            />
+          </span>
+        </span>
+      </div>
 
       <section className={`${styles.intro} ${spot ? styles.hidden : ''}`} aria-hidden={!!spot}>
         <p className={styles.eyebrow}>
