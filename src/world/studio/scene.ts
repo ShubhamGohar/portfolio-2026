@@ -49,6 +49,7 @@ const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2
 export interface StudioHooks {
   onFirstFrame?: () => void;
   onFullQuality?: () => void;
+  onReady?: () => void;
   onHover?: (index: number | null) => void;
 }
 
@@ -88,7 +89,10 @@ function searchParam(name: string) {
 
 export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioHandle {
   const mounted = createStudioStage(host);
-  if (!mounted) return stub();
+  if (!mounted) {
+    hooks.onReady?.();
+    return stub();
+  }
   const stage = mounted;
   const { scene, camera, phone } = stage;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -646,6 +650,7 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     if (tier === 'light') {
       upgrading = false;
       scheduleIntro();
+      hooks.onReady?.();
       return;
     }
     const hi = {
@@ -698,6 +703,7 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     postFadeTarget = 1;
     phase = 'full';
     hooks.onFullQuality?.();
+    hooks.onReady?.();
     scheduleIntro();
   }
 
@@ -732,8 +738,9 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
           else setTimeout(cb, 320);
         };
         later(() => void upgrade());
-      } else if (hold !== 'light' && !demo) {
+      } else {
         scheduleIntro();
+        hooks.onReady?.();
       }
     }
     if (introDelay >= 0) {
