@@ -290,6 +290,8 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   b.add(chamfer(0.2, 0.016, 0.26, 0.005), M.forest, [-0.5, deskH + 0.026, 0.06], [0, 0.25, 0], 1, desk);
   b.add(chamfer(0.19, 0.008, 0.25, 0.003), M.paper, [-0.5, deskH + 0.02, 0.06], [0, 0.25, 0], 1, desk);
   b.add(chamfer(0.012, 0.018, 0.26, 0.002), M.rust, [-0.44, deskH + 0.027, 0.04], [0, 0.25, 0], 1, desk);
+  b.add(chamfer(0.15, 0.002, 0.2, 0.001), M.paper, [0.14, deskH + 0.02, 0.02], [0, 0.22, 0], 1, desk);
+  b.add(new THREE.CylinderGeometry(0.0036, 0.004, 0.12, 8), M.brass, [0.08, deskH + 0.023, 0.06], [1.22, 0.3, 0.15], 1, desk);
   // architect lamp
   const lampBase = new THREE.Vector3(0.64, deskH + 0.018, -0.22);
   const j1 = new THREE.Vector3(0.66, deskH + 0.34, -0.12);
@@ -359,12 +361,19 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     [-0.82, 1.78, 0.5, 0.64, 0],
     [-0.22, 1.86, 0.42, 0.42, 1],
     [-0.22, 1.42, 0.42, 0.3, 2],
+    [1.7, 1.7, 0.38, 0.5, 1],
   ];
   for (const [x, y, w, h, k] of frames) {
     b.add(chamfer(w, h, 0.03, 0.005), M.ink, [x, y, back + 0.027]);
     b.add(new THREE.PlaneGeometry(w - 0.04, h - 0.04), M.paper, [x, y, back + 0.0425]);
     b.add(new THREE.PlaneGeometry(w - 0.14, h - 0.14), prints[k], [x, y, back + 0.0435]);
   }
+
+  b.add(new THREE.CylinderGeometry(0.1, 0.1, 0.024, 28), M.oak, [left + 0.02, 2.12, 1.38], [0, 0, Math.PI / 2]);
+  b.add(new THREE.CylinderGeometry(0.078, 0.078, 0.006, 28), M.paper, [left + 0.034, 2.12, 1.38], [0, 0, Math.PI / 2]);
+  b.add(chamfer(0.0035, 0.045, 0.0035, 0.001), M.ink, [left + 0.04, 2.14, 1.38]);
+  b.add(chamfer(0.0035, 0.06, 0.0035, 0.001), M.rust, [left + 0.04, 2.12, 1.408]);
+  b.add(new THREE.SphereGeometry(0.007, 10, 8), M.brass, [left + 0.042, 2.12, 1.38]);
 
   // ---------- pinboard with ten pins (Experience) ----------
   const board = new THREE.Matrix4().compose(new THREE.Vector3(left + 0.02, 1.62, -1.15), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI / 2, 0)), new THREE.Vector3(1, 1, 1));
