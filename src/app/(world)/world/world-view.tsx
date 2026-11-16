@@ -185,7 +185,16 @@ export default function WorldView({
         {/* Full load back to the 2D root layout so the WebGL context is torn down. */}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a className={styles.brand} href="/">
-          <span className={styles.mono}>SG</span>
+          {/* Same asset as the 2D navbar/footer — skip next/image. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className={styles.brandLogo}
+            src="/logo-white.webp"
+            alt=""
+            width={40}
+            height={40}
+            decoding="async"
+          />
           <span className={styles.brandText}>
             <span className={styles.brandName}>Shubham Gohar</span>
             <span className={styles.brandRole}>{intro.role}</span>

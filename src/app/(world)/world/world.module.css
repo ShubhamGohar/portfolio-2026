@@ -63,21 +63,17 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  min-height: 44px;
   color: inherit;
   text-decoration: none;
 }
 
-.mono {
-  display: grid;
-  place-items: center;
+.brandLogo {
+  display: block;
+  flex: none;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(244, 238, 229, 0.35);
-  border-radius: 50%;
-  font-family: var(--world-serif);
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  object-fit: contain;
 }
 
 .brandText {
@@ -1023,9 +1019,9 @@
     padding: 18px 18px;
   }
 
-  .mono {
-    width: 36px;
-    height: 36px;
+  .brandLogo {
+    width: 38px;
+    height: 38px;
   }
 
   .barLink {
