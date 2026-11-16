@@ -10,7 +10,6 @@ type StudioHandle = {
   focus: (index: number | null) => void;
   highlight: (index: number | null) => void;
   anchors: () => { x: number; y: number; visible: boolean }[];
-  scrollBy: (delta: number) => void;
   dispose: () => void;
 };
 
@@ -38,17 +37,6 @@ export default function WorldView({
   const [full, setFull] = useState(false);
   const [ready, setReady] = useState(false);
   const [mapOnly, setMapOnly] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const activeRef = useRef<number | null>(null);
-  activeRef.current = active;
-
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const sync = () => setReduceMotion(media.matches);
-    sync();
-    media.addEventListener('change', sync);
-    return () => media.removeEventListener('change', sync);
-  }, []);
 
   useEffect(() => {
     if (shouldSkipWebGL()) {
@@ -112,44 +100,6 @@ export default function WorldView({
       handleRef.current = null;
     };
   }, [stations]);
-
-  useEffect(() => {
-    if (mapOnly || reduceMotion) return;
-    const isUi = (target: EventTarget | null) =>
-      target instanceof HTMLElement &&
-      Boolean(target.closest('aside, header, form, input, textarea, label'));
-
-    const onWheel = (event: WheelEvent) => {
-      if (activeRef.current !== null || isUi(event.target)) return;
-      event.preventDefault();
-      handleRef.current?.scrollBy(event.deltaY);
-    };
-
-    let lastY = 0;
-    const onTouchStart = (event: TouchEvent) => {
-      if (activeRef.current !== null || isUi(event.target)) return;
-      lastY = event.touches[0]?.clientY ?? lastY;
-    };
-    const onTouchMove = (event: TouchEvent) => {
-      if (activeRef.current !== null || isUi(event.target)) return;
-      const y = event.touches[0]?.clientY;
-      if (y == null) return;
-      const dy = lastY - y;
-      lastY = y;
-      if (Math.abs(dy) < 0.4) return;
-      event.preventDefault();
-      handleRef.current?.scrollBy(dy * 1.35);
-    };
-
-    window.addEventListener('wheel', onWheel, { passive: false });
-    window.addEventListener('touchstart', onTouchStart, { passive: true });
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
-    return () => {
-      window.removeEventListener('wheel', onWheel);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-    };
-  }, [mapOnly, reduceMotion]);
 
   const select = useCallback((index: number | null) => {
     setActive(index);
@@ -327,11 +277,7 @@ export default function WorldView({
             </li>
           ))}
         </ol>
-        {reduceMotion ? null : (
-          <p className={styles.scrollHint}>Swipe to move through the studio</p>
-        )}
         <p className={styles.keys}>
-          {reduceMotion ? null : <>Scroll to look around · </>}
           <kbd>←</kbd>
           <kbd>→</kbd> to browse · <kbd>Esc</kbd> back to 2D
         </p>

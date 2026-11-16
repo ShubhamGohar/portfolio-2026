@@ -8,7 +8,6 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  overscroll-behavior: none;
   background: #171514;
   color: var(--paper);
   font-family: var(--world-body), system-ui, sans-serif;
@@ -40,7 +39,6 @@
   inset: 0;
   z-index: 1;
   opacity: 0;
-  touch-action: none;
   transition: opacity 0.7s ease;
 }
 
@@ -371,10 +369,6 @@
 .indexRow:focus-visible {
   outline: 2px solid var(--rust);
   outline-offset: -2px;
-}
-
-.scrollHint {
-  display: none;
 }
 
 .keys {
@@ -1073,13 +1067,6 @@
   .index,
   .keys {
     display: none;
-  }
-
-  .scrollHint {
-    display: block;
-    margin: 16px 0 0;
-    font-size: 0.78rem;
-    color: rgba(244, 238, 229, 0.5);
   }
 
   .markerLabel {

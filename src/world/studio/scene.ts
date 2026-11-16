@@ -63,7 +63,6 @@ export interface StudioHandle {
   renderFrame: (t: number, dt: number) => void;
   snapshot: () => string;
   phase: () => 'light' | 'full';
-  scrollBy: (delta: number) => void;
   dispose: () => void;
 }
 
@@ -77,7 +76,6 @@ const stub = (): StudioHandle => ({
   renderFrame: () => {},
   snapshot: () => '',
   phase: () => 'light',
-  scrollBy: () => {},
   dispose: () => {},
 });
 
@@ -155,7 +153,7 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   const books = [P.forest, P.rust, P.oat, P.ink, P.sand, P.sage, 0x7a5a45].map(
     (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.7 }),
   );
-  const prints = ([0, 1, 2, 3] as const).map((k) => new THREE.MeshStandardMaterial({ map: T.print(k), roughness: 0.9 }));
+  const prints = ([0, 1, 2] as const).map((k) => new THREE.MeshStandardMaterial({ map: T.print(k), roughness: 0.9 }));
 
   // ---------- lights (lamp starts off so the poster matches the first frame) ----------
   scene.add(new THREE.HemisphereLight(0xe3e9f2, 0x7a5a42, startLit ? 0.55 : 0.42));
@@ -235,7 +233,7 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   b.add(chamfer(0.075, 0.075, 0.012, 0.004), M.trim, [-1.35, 0.28, back + 0.006]);
 
   // ---------- rug ----------
-  b.add(new RoundedBoxGeometry(2.9, 0.02, 2.05, 2, 0.01), M.rug, [0.22, 0.01, 0.42], [0, 0.06, 0]);
+  b.add(new RoundedBoxGeometry(2.3, 0.018, 1.6, 2, 0.008), M.rug, [0.35, 0.009, 0.25], [0, 0.05, 0]);
 
   // ---------- desk (Work) ----------
   const desk = new THREE.Matrix4().makeTranslation(-0.35, 0, back + 0.42);
@@ -292,11 +290,8 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   b.add(chamfer(0.2, 0.016, 0.26, 0.005), M.forest, [-0.5, deskH + 0.026, 0.06], [0, 0.25, 0], 1, desk);
   b.add(chamfer(0.19, 0.008, 0.25, 0.003), M.paper, [-0.5, deskH + 0.02, 0.06], [0, 0.25, 0], 1, desk);
   b.add(chamfer(0.012, 0.018, 0.26, 0.002), M.rust, [-0.44, deskH + 0.027, 0.04], [0, 0.25, 0], 1, desk);
-  // loose papers, pen, extra spine
-  b.add(chamfer(0.16, 0.002, 0.22, 0.001), M.paper, [0.16, deskH + 0.019, 0.04], [0, 0.18, 0], 1, desk);
-  b.add(chamfer(0.16, 0.002, 0.22, 0.001), M.paper, [0.18, deskH + 0.022, 0.01], [0, 0.32, 0], 1, desk);
-  b.add(new THREE.CylinderGeometry(0.0038, 0.0042, 0.13, 8), M.brass, [0.1, deskH + 0.024, 0.07], [1.25, 0.35, 0.2], 1, desk);
-  b.add(chamfer(0.14, 0.028, 0.11, 0.004), M.ink, [0.52, deskH + 0.03, 0.16], [0, -0.4, 0], 1, desk);
+  b.add(chamfer(0.15, 0.002, 0.2, 0.001), M.paper, [0.14, deskH + 0.02, 0.02], [0, 0.22, 0], 1, desk);
+  b.add(new THREE.CylinderGeometry(0.0036, 0.004, 0.12, 8), M.brass, [0.08, deskH + 0.023, 0.06], [1.22, 0.3, 0.15], 1, desk);
   // architect lamp
   const lampBase = new THREE.Vector3(0.64, deskH + 0.018, -0.22);
   const j1 = new THREE.Vector3(0.66, deskH + 0.34, -0.12);
@@ -328,25 +323,17 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   lamp.shadow.bias = -0.0008;
   scene.add(lamp, lamp.target);
 
-  // ---------- task chair (own batch so it can idle-sway) ----------
-  const chairGroup = new THREE.Group();
-  chairGroup.position.set(-0.42, 0, back + 1.12);
-  chairGroup.rotation.y = 0.42;
-  const cb = new Batch();
-  cb.add(new RoundedBoxGeometry(0.46, 0.07, 0.44, 3, 0.03), M.forest, [0, 0.47, 0]);
-  cb.add(bendY(new RoundedBoxGeometry(0.44, 0.42, 0.05, 3, 0.022), 0.4), M.forest, [0, 0.82, 0.2], [-0.1, Math.PI, 0]);
-  cb.add(tube([new THREE.Vector3(0, 0.44, 0.12), new THREE.Vector3(0, 0.5, 0.24), new THREE.Vector3(0, 0.68, 0.25)], 0.014, 16), M.ink);
-  cb.add(new THREE.CylinderGeometry(0.022, 0.026, 0.34, 14), M.alu, [0, 0.27, 0]);
+  // ---------- task chair ----------
+  const chair = new THREE.Matrix4().compose(new THREE.Vector3(-0.42, 0, back + 1.12), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0.42, 0)), new THREE.Vector3(1, 1, 1));
+  b.add(new RoundedBoxGeometry(0.46, 0.07, 0.44, 3, 0.03), M.forest, [0, 0.47, 0], [0, 0, 0], 1, chair);
+  b.add(bendY(new RoundedBoxGeometry(0.44, 0.42, 0.05, 3, 0.022), 0.4), M.forest, [0, 0.82, 0.2], [-0.1, Math.PI, 0], 1, chair);
+  b.add(tube([new THREE.Vector3(0, 0.44, 0.12), new THREE.Vector3(0, 0.5, 0.24), new THREE.Vector3(0, 0.68, 0.25)], 0.014, 16), M.ink, [0, 0, 0], [0, 0, 0], 1, chair);
+  b.add(new THREE.CylinderGeometry(0.022, 0.026, 0.34, 14), M.alu, [0, 0.27, 0], [0, 0, 0], 1, chair);
   for (let i = 0; i < 5; i += 1) {
     const a = (i / 5) * Math.PI * 2;
-    cb.add(chamfer(0.3, 0.025, 0.04, 0.008), M.ink, [Math.cos(a) * 0.15, 0.08, Math.sin(a) * 0.15], [0, -a, -0.06]);
-    cb.add(new THREE.SphereGeometry(0.024, 12, 8), M.inkMatte, [Math.cos(a) * 0.29, 0.026, Math.sin(a) * 0.29]);
+    b.add(chamfer(0.3, 0.025, 0.04, 0.008), M.ink, [Math.cos(a) * 0.15, 0.08, Math.sin(a) * 0.15], [0, -a, -0.06], 1, chair);
+    b.add(new THREE.SphereGeometry(0.024, 12, 8), M.inkMatte, [Math.cos(a) * 0.29, 0.026, Math.sin(a) * 0.29], [0, 0, 0], 1, chair);
   }
-  cb.add(new THREE.TorusGeometry(0.05, 0.007, 8, 18, Math.PI), M.ink, [0.2, 0.7, 0.16], [Math.PI / 2, 0.15, 0.35]);
-  cb.add(new THREE.CylinderGeometry(0.026, 0.028, 0.018, 12), M.inkMatte, [0.155, 0.66, 0.16], [1.15, 0, 0.2]);
-  cb.add(new THREE.CylinderGeometry(0.026, 0.028, 0.018, 12), M.inkMatte, [0.245, 0.66, 0.16], [1.15, 0, -0.2]);
-  cb.build(chairGroup);
-  room.add(chairGroup);
 
   // ---------- floating shelves (Skills) ----------
   const shelf = new THREE.Matrix4().makeTranslation(left + 0.12, 0, 0.05);
@@ -374,8 +361,7 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     [-0.82, 1.78, 0.5, 0.64, 0],
     [-0.22, 1.86, 0.42, 0.42, 1],
     [-0.22, 1.42, 0.42, 0.3, 2],
-    [1.7, 1.72, 0.4, 0.52, 1],
-    [1.7, 1.24, 0.4, 0.28, 3],
+    [1.7, 1.7, 0.38, 0.5, 1],
   ];
   for (const [x, y, w, h, k] of frames) {
     b.add(chamfer(w, h, 0.03, 0.005), M.ink, [x, y, back + 0.027]);
@@ -383,21 +369,11 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     b.add(new THREE.PlaneGeometry(w - 0.14, h - 0.14), prints[k], [x, y, back + 0.0435]);
   }
 
-  // landscape print on the left wall (not a blank panel)
-  const wallArt = new THREE.Matrix4().compose(
-    new THREE.Vector3(left + 0.02, 1.92, 0.88),
-    new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI / 2, 0)),
-    new THREE.Vector3(1, 1, 1),
-  );
-  b.add(chamfer(0.7, 0.42, 0.03, 0.006), M.oak, [0, 0, 0], [0, 0, 0], 1, wallArt);
-  b.add(new THREE.PlaneGeometry(0.62, 0.34), prints[3], [0, 0, 0.016], [0, 0, 0], 1, wallArt);
-
-  // wall clock
-  b.add(new THREE.CylinderGeometry(0.11, 0.11, 0.028, 28), M.oak, [left + 0.02, 2.14, 1.42], [0, 0, Math.PI / 2]);
-  b.add(new THREE.CylinderGeometry(0.084, 0.084, 0.008, 28), M.paper, [left + 0.036, 2.14, 1.42], [0, 0, Math.PI / 2]);
-  b.add(chamfer(0.004, 0.05, 0.004, 0.001), M.ink, [left + 0.042, 2.162, 1.42]);
-  b.add(chamfer(0.004, 0.068, 0.004, 0.001), M.rust, [left + 0.042, 2.14, 1.452]);
-  b.add(new THREE.SphereGeometry(0.008, 10, 8), M.brass, [left + 0.044, 2.14, 1.42]);
+  b.add(new THREE.CylinderGeometry(0.1, 0.1, 0.024, 28), M.oak, [left + 0.02, 2.12, 1.38], [0, 0, Math.PI / 2]);
+  b.add(new THREE.CylinderGeometry(0.078, 0.078, 0.006, 28), M.paper, [left + 0.034, 2.12, 1.38], [0, 0, Math.PI / 2]);
+  b.add(chamfer(0.0035, 0.045, 0.0035, 0.001), M.ink, [left + 0.04, 2.14, 1.38]);
+  b.add(chamfer(0.0035, 0.06, 0.0035, 0.001), M.rust, [left + 0.04, 2.12, 1.408]);
+  b.add(new THREE.SphereGeometry(0.007, 10, 8), M.brass, [left + 0.042, 2.12, 1.38]);
 
   // ---------- pinboard with ten pins (Experience) ----------
   const board = new THREE.Matrix4().compose(new THREE.Vector3(left + 0.02, 1.62, -1.15), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI / 2, 0)), new THREE.Vector3(1, 1, 1));
@@ -462,8 +438,6 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   b.add(new RoundedBoxGeometry(0.66, 0.5, 0.14, 4, 0.055), M.oatFabric, [0, 0.6, -0.27], [-0.22, 0, 0], 1, lounge);
   for (const x of [-0.36, 0.36]) b.add(chamfer(0.05, 0.05, 0.62, 0.015), M.oak, [x, 0.5, 0.0], [0, 0, 0], 1, lounge);
   b.add(new RoundedBoxGeometry(0.32, 0.22, 0.08, 3, 0.035), M.rust, [0.12, 0.52, -0.16], [-0.25, -0.2, 0.15], 1, lounge);
-  b.add(chamfer(0.3, 0.012, 0.2, 0.004), M.ink, [-0.08, 0.42, 0.1], [0, 0.45, 0], 1, lounge);
-  b.add(chamfer(0.3, 0.012, 0.2, 0.004), M.ink, [-0.08, 0.5, 0.02], [1.05, 0.45, 0], 1, lounge);
 
   const sideTable = new THREE.Vector3(1.6, 0, 0.62);
   b.add(lathe([[0, 0], [0.16, 0], [0.16, 0.015], [0.03, 0.03], [0.022, 0.5], [0.0, 0.5]], 36), M.ink, [sideTable.x, 0, sideTable.z]);
@@ -489,83 +463,6 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   envelope.position.set(sideTable.x + 0.06, 0.74, sideTable.z + 0.06);
   room.add(envelope);
 
-  // ---------- lived-in floor + wall dressing ----------
-  const pouf = new THREE.Vector3(0.08, 0, 1.12);
-  b.add(new RoundedBoxGeometry(0.48, 0.26, 0.48, 4, 0.07), M.rust, [pouf.x, 0.13, pouf.z], [0, 0.18, 0]);
-  b.add(new RoundedBoxGeometry(0.46, 0.04, 0.46, 3, 0.04), M.oatFabric, [pouf.x, 0.25, pouf.z], [0, 0.18, 0]);
-
-  const crate = new THREE.Matrix4().makeTranslation(1.72, 0, 1.18);
-  b.add(chamfer(0.44, 0.014, 0.34, 0.004), M.oak, [0, 0.007, 0], [0, 0.12, 0], 1, crate);
-  b.add(chamfer(0.44, 0.24, 0.016, 0.004), M.oak, [0, 0.12, 0.162], [0, 0.12, 0], 1, crate);
-  b.add(chamfer(0.44, 0.24, 0.016, 0.004), M.oak, [0, 0.12, -0.162], [0, 0.12, 0], 1, crate);
-  b.add(chamfer(0.016, 0.24, 0.34, 0.004), M.oak, [0.212, 0.12, 0], [0, 0.12, 0], 1, crate);
-  b.add(chamfer(0.016, 0.24, 0.34, 0.004), M.oak, [-0.212, 0.12, 0], [0, 0.12, 0], 1, crate);
-  let crateZ = -0.1;
-  ([[0.16, 0.04, 0.22, 0], [0.15, 0.032, 0.2, 0.08], [0.17, 0.036, 0.18, -0.05]] as const).forEach(([h, w, d, yaw], i) => {
-    b.add(chamfer(d, h, w, 0.004), books[i % books.length], [0.02, 0.02 + h / 2, crateZ], [0, 0.12 + yaw, 0], 1, crate);
-    crateZ += w + 0.01;
-  });
-
-  let stackY = 0;
-  ([[0.28, 0.038, 0.2, 0.12], [0.26, 0.032, 0.18, -0.08], [0.24, 0.04, 0.2, 0.2], [0.22, 0.028, 0.16, -0.15]] as const).forEach(
-    ([w, h, d, yaw], i) => {
-      b.add(chamfer(w, h, d, 0.004), books[(i + 2) % books.length], [0.78, stackY + h / 2, 1.38], [0, yaw, 0]);
-      stackY += h;
-    },
-  );
-
-  b.add(chamfer(0.22, 0.01, 0.28, 0.003), M.forest, [-0.22, 0.016, 0.58], [0, 0.4, 0]);
-  b.add(chamfer(0.22, 0.01, 0.28, 0.003), M.ink, [-0.18, 0.027, 0.55], [0, 0.55, 0]);
-  b.add(chamfer(0.2, 0.002, 0.26, 0.002), M.paper, [-0.18, 0.034, 0.55], [0, 0.55, 0]);
-  b.add(chamfer(0.2, 0.002, 0.26, 0.002), M.paper, [-0.16, 0.037, 0.52], [0, 0.72, 0]);
-
-  b.add(lathe([[0, 0], [0.11, 0], [0.12, 0.02], [0.11, 0.28], [0.1, 0.3], [0, 0.3]], 28), M.inkMatte, [-1.02, 0, back + 0.72]);
-  b.add(chamfer(0.08, 0.012, 0.1, 0.003), M.paper, [-1.02, 0.306, back + 0.72], [0, 0.2, 0]);
-
-  const snake = new THREE.Vector3(1.92, 0, -1.48);
-  b.add(lathe([[0, 0], [0.09, 0], [0.1, 0.04], [0.085, 0.22], [0.07, 0.24], [0, 0.24]], 28), M.terracotta, [snake.x, 0, snake.z]);
-  b.add(new THREE.CylinderGeometry(0.07, 0.07, 0.01, 20), M.soil, [snake.x, 0.23, snake.z]);
-  for (const [dx, dz, h, yaw] of [
-    [-0.02, 0.01, 0.62, 0.1],
-    [0.025, -0.015, 0.5, -0.18],
-    [0.0, -0.03, 0.44, 0.32],
-    [0.03, 0.02, 0.38, -0.4],
-  ] as const) {
-    b.add(chamfer(0.045, h, 0.01, 0.004), M.leaf, [snake.x + dx, 0.24 + h / 2, snake.z + dz], [0.08, yaw, 0.04]);
-  }
-
-  b.add(new THREE.CylinderGeometry(0.012, 0.014, 0.08, 10), M.brass, [left + 0.04, 1.58, 1.78], [0, 0, Math.PI / 2]);
-  b.add(chamfer(0.07, 0.42, 0.24, 0.018), M.forest, [left + 0.08, 1.28, 1.78], [0.12, 0.08, 0]);
-  b.add(chamfer(0.05, 0.08, 0.18, 0.012), M.oak, [left + 0.07, 1.5, 1.78], [0.12, 0.08, 0]);
-
-  const floorLamp = new THREE.Vector3(0.52, 0, 1.55);
-  b.add(lathe([[0, 0], [0.09, 0], [0.09, 0.02], [0.02, 0.04], [0.016, 1.18], [0, 1.18]], 20), M.ink, [floorLamp.x, 0, floorLamp.z]);
-  b.add(lathe([[0.02, 0], [0.14, -0.02], [0.18, -0.16], [0.16, -0.17], [0.12, -0.04], [0.02, -0.01]], 28), M.sand, [floorLamp.x, 1.34, floorLamp.z]);
-  const floorGlow = new THREE.Mesh(
-    new THREE.SphereGeometry(0.06, 12, 8),
-    new THREE.MeshBasicMaterial({ color: new THREE.Color(1.8, 1.35, 0.9) }),
-  );
-  floorGlow.position.set(floorLamp.x, 1.26, floorLamp.z);
-  room.add(floorGlow);
-
-  b.add(chamfer(0.1, 0.025, 0.14, 0.004), M.forest, [win.x - 0.28, win.y - win.h / 2 + 0.02, back + 0.08], [0, 0.25, 0]);
-  b.add(chamfer(0.09, 0.02, 0.12, 0.003), M.ink, [win.x - 0.3, win.y - win.h / 2 + 0.045, back + 0.07], [0, 0.4, 0]);
-  b.add(lathe([[0, 0], [0.04, 0], [0.05, 0.03], [0.03, 0.05], [0, 0.05]], 20), M.ceramic, [win.x + 0.32, win.y - win.h / 2 + 0.02, back + 0.08]);
-
-  b.add(
-    tube(
-      [
-        new THREE.Vector3(-0.2, 0.02, back + 0.55),
-        new THREE.Vector3(0.15, 0.018, 0.2),
-        new THREE.Vector3(0.35, 0.016, 0.85),
-        new THREE.Vector3(0.5, 0.22, 1.52),
-      ],
-      0.006,
-      24,
-    ),
-    M.inkMatte,
-  );
-
   b.build(room);
 
   // ---------- light patches and contact shadows ----------
@@ -587,38 +484,25 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     m.scale.set(sx, sz, 1);
     room.add(m);
   };
-  blob(0.22, 0.42, 3.15, 2.2, 0.22);
   blob(-0.42, back + 1.12, 0.8, 0.8, 0.55);
   blob(1.25, -0.35, 1.1, 1.1, 0.5);
   blob(sideTable.x, sideTable.z, 0.6, 0.6, 0.55);
   blob(plant.position.x, plant.position.z, 0.7, 0.7, 0.6);
   blob(-0.35, back + 0.42, 1.8, 0.95, 0.35);
-  blob(pouf.x, pouf.z, 0.7, 0.7, 0.45);
-  blob(1.72, 1.18, 0.7, 0.55, 0.4);
-  blob(0.78, 1.38, 0.5, 0.4, 0.4);
-  blob(snake.x, snake.z, 0.45, 0.45, 0.45);
-  blob(floorLamp.x, floorLamp.z, 0.4, 0.4, 0.35);
-  blob(-1.02, back + 0.72, 0.35, 0.35, 0.4);
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: T.softBlob('rgba(0,0,0,0.75)', 'rgba(0,0,0,0)'), transparent: true, depthWrite: false }));
   ground.rotation.x = -Math.PI / 2;
   ground.position.y = -0.23;
   ground.scale.set(8.5, 8.5, 1);
   scene.add(ground);
 
-  // dust in the window light + a few motes in the lamp cone
-  const moteCount = phone ? 48 : 110;
+  // dust in the window light
+  const moteCount = phone ? 40 : 90;
   const moteGeo = new THREE.BufferGeometry();
   const motePos = new Float32Array(moteCount * 3);
   for (let i = 0; i < moteCount; i += 1) {
-    if (i < moteCount * 0.7) {
-      motePos[i * 3] = win.x - 0.4 + rr() * 1.2;
-      motePos[i * 3 + 1] = 0.2 + rr() * 1.8;
-      motePos[i * 3 + 2] = back + 0.2 + rr() * 1.4;
-    } else {
-      motePos[i * 3] = bulbWorld.x - 0.25 + rr() * 0.55;
-      motePos[i * 3 + 1] = Math.max(0.2, bulbWorld.y - 0.2 + rr() * 0.5);
-      motePos[i * 3 + 2] = bulbWorld.z - 0.2 + rr() * 0.55;
-    }
+    motePos[i * 3] = win.x - 0.4 + rr() * 1.2;
+    motePos[i * 3 + 1] = 0.2 + rr() * 1.8;
+    motePos[i * 3 + 2] = back + 0.2 + rr() * 1.4;
   }
   moteGeo.setAttribute('position', new THREE.BufferAttribute(motePos, 3));
   const motes = new THREE.Points(moteGeo, new THREE.PointsMaterial({ color: 0xffe0b5, size: 0.012, transparent: true, opacity: 0.8, depthWrite: false }));
@@ -702,44 +586,6 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     spot([1.25, 0.52, -0.25], 42, 18, 5.0),
     spot([1.45, 0.62, 0.3], 40, 22, 4.8),
   ];
-  const tourStops: { view: View; sceneIndex: number }[] = phone
-    ? [
-        { view: overview, sceneIndex: 0 },
-        { view: views[2], sceneIndex: 2 },
-        { view: views[3], sceneIndex: 3 },
-        { view: views[6], sceneIndex: 6 },
-      ]
-    : [
-        { view: overview, sceneIndex: 0 },
-        { view: views[2], sceneIndex: 2 },
-        { view: views[4], sceneIndex: 4 },
-        { view: views[3], sceneIndex: 3 },
-        { view: views[5], sceneIndex: 5 },
-        { view: views[6], sceneIndex: 6 },
-      ];
-
-  function lerpView(a: View, b: View, k: number): View {
-    return {
-      target: a.target.clone().lerp(b.target, k),
-      az: a.az + (b.az - a.az) * k,
-      el: a.el + (b.el - a.el) * k,
-      dist: a.dist + (b.dist - a.dist) * k,
-      ox: a.ox + (b.ox - a.ox) * k,
-      oy: a.oy + (b.oy - a.oy) * k,
-    };
-  }
-
-  function viewAtProgress(p: number): { view: View; sceneIndex: number } {
-    const n = tourStops.length - 1;
-    const x = THREE.MathUtils.clamp(p, 0, 1) * n;
-    const i = Math.min(n - 1, Math.floor(x));
-    const u = x - i;
-    const k = easeInOutCubic(u);
-    return {
-      view: lerpView(tourStops[i].view, tourStops[i + 1].view, k),
-      sceneIndex: u < 0.5 ? tourStops[i].sceneIndex : tourStops[i + 1].sceneIndex,
-    };
-  }
 
   const opening = startLit ? overview : pulled;
   const cur: View = { ...opening, target: opening.target.clone() };
@@ -761,44 +607,11 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
   let drawn = 0;
   let fpsArmed = false;
   let postSetFade: ((k: number) => void) | null = null;
-  let tourProgress = 0;
-  let tourDriving = false;
-  let tourGoal: View | null = null;
-  const screenMat = screenMesh.material as THREE.MeshBasicMaterial;
-
-  function applyTour(p: number) {
-    if (reduced || activeIndex !== null) return;
-    tourProgress = THREE.MathUtils.clamp(p, 0, 1);
-    const next = viewAtProgress(tourProgress);
-    tourGoal = next.view;
-    tourDriving = true;
-    tween = 1;
-    if (hoverIndex !== next.sceneIndex) {
-      hoverIndex = next.sceneIndex;
-      hooks.onHover?.(next.sceneIndex);
-    }
-  }
-
-  function scrollBy(delta: number) {
-    if (reduced || activeIndex !== null) return;
-    const span = phone ? 640 : 1100;
-    applyTour(tourProgress + delta / span);
-  }
 
   function focus(index: number | null) {
     activeIndex = index;
-    tourDriving = false;
     from = { ...cur, target: cur.target.clone() };
-    if (index === null) {
-      const parked = viewAtProgress(tourProgress);
-      to = parked.view;
-      tourGoal = parked.view;
-      tourDriving = !reduced;
-    } else {
-      to = views[index];
-      const stop = tourStops.findIndex((s) => s.sceneIndex === index);
-      if (stop >= 0) tourProgress = stop / Math.max(1, tourStops.length - 1);
-    }
+    to = index === null ? overview : views[index];
     duration = 1.7;
     tween = reduced ? 1 : 0;
     if (reduced) Object.assign(cur, { ...to, target: to.target.clone() });
@@ -815,9 +628,6 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     introStarted = true;
     lampWanted = 1;
     if (activeIndex !== null) return;
-    tourProgress = 0;
-    tourDriving = false;
-    tourGoal = null;
     from = { ...cur, target: cur.target.clone() };
     to = overview;
     duration = 2.6;
@@ -957,20 +767,12 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     if (lampT !== lampWanted) {
       const dirLamp = Math.sign(lampWanted - lampT) || 1;
       lampT = THREE.MathUtils.clamp(lampT + dirLamp * (dt / 1.35), 0, 1);
-    }
-    {
       const k = easeInOutCubic(lampT);
-      const deskLit = hoverIndex === 2 || activeIndex === 2;
-      const flicker = reduced ? 1 : 1 + 0.022 * Math.sin(t * 7.2) + (deskLit ? 0.09 + 0.03 * Math.sin(t * 5.1) : 0);
-      lamp.intensity = lampMax * k * flicker;
+      lamp.intensity = lampMax * k;
       bulbMat.color.setRGB(0.38 + 5.62 * k, 0.28 + 4.32 * k, 0.2 + 2.8 * k);
       key.intensity = 1.2 + 1.2 * k;
       fill.intensity = 0.55 - 0.1 * k;
       beamMat.opacity = 0.72 * k;
-      const pulse = reduced ? 1.35 : 1.22 + 0.1 * Math.sin(t * 2.15) + (deskLit ? 0.22 : 0);
-      screenMat.color.setRGB(pulse, pulse, pulse);
-      const glow = 1.55 + (reduced ? 0 : 0.18 * Math.sin(t * 1.7));
-      (floorGlow.material as THREE.MeshBasicMaterial).color.setRGB(glow, glow * 0.74, glow * 0.48);
     }
     if (tween < 1) {
       tween = Math.min(1, tween + dt / duration);
@@ -985,14 +787,6 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
         fpsArmed = true;
         fps.arm();
       }
-    } else if (tourDriving && activeIndex === null && tourGoal && !reduced) {
-      const k = 1 - Math.exp(-dt * 5.4);
-      cur.target.lerp(tourGoal.target, k);
-      cur.az += (tourGoal.az - cur.az) * k;
-      cur.el += (tourGoal.el - cur.el) * k;
-      cur.dist += (tourGoal.dist - cur.dist) * k;
-      cur.ox += (tourGoal.ox - cur.ox) * k;
-      cur.oy += (tourGoal.oy - cur.oy) * k;
     }
     fps.sample(dt);
     smooth.lerp(pointer, 1 - Math.exp(-dt * 1.6));
@@ -1012,13 +806,10 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     }
 
     if (!reduced) {
-      const mailLit = hoverIndex === 6 || hoverIndex === 7 || activeIndex === 6 || activeIndex === 7;
-      envelope.position.y = 0.74 + Math.sin(t * (mailLit ? 2.1 : 1.4)) * (mailLit ? 0.04 : 0.025);
-      envelope.rotation.y = Math.sin(t * 0.6) * (mailLit ? 0.32 : 0.18);
+      envelope.position.y = 0.74 + Math.sin(t * 1.4) * 0.025;
+      envelope.rotation.y = Math.sin(t * 0.6) * 0.18;
       envelope.rotation.z = Math.sin(t * 0.9) * 0.04;
-      plant.rotation.z = Math.sin(t * 0.7) * 0.01;
-      plant.rotation.y = Math.sin(t * 0.35) * 0.02;
-      chairGroup.rotation.y = 0.42 + Math.sin(t * 0.32) * 0.04;
+      plant.rotation.z = Math.sin(t * 0.7) * 0.006;
       for (let i = 0; i < moteCount; i += 1) {
         let y = mp.getY(i) + dt * 0.03;
         if (y > 2.0) y = 0.2;
@@ -1056,7 +847,6 @@ export function mountStudio(host: HTMLElement, hooks: StudioHooks = {}): StudioH
     renderFrame: (t, dt) => stage.renderFrame(t, dt),
     snapshot: () => stage.snapshot(),
     phase: () => phase,
-    scrollBy,
     dispose: () => {
       window.removeEventListener('pointermove', onPointer);
       fps.disarm();

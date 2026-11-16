@@ -168,11 +168,11 @@ export function fabric(base: string, size = 128, anisotropy = 1) {
 }
 
 /** Abstract prints: no text, no project names. */
-export function print(kind: 0 | 1 | 2 | 3) {
+export function print(kind: 0 | 1 | 2) {
   const W = 256;
-  const H = kind === 0 ? 320 : kind === 3 ? 176 : 256;
+  const H = kind === 0 ? 320 : 256;
   const [c, ctx] = canvas(W, H);
-  ctx.fillStyle = ['#efe6d8', '#2e3d36', '#e9dfcf', '#d9ccb9'][kind];
+  ctx.fillStyle = ['#efe6d8', '#2e3d36', '#e9dfcf'][kind];
   ctx.fillRect(0, 0, W, H);
   if (kind === 0) {
     ctx.fillStyle = '#c0583a';
@@ -199,25 +199,12 @@ export function print(kind: 0 | 1 | 2 | 3) {
     ctx.beginPath();
     ctx.arc(W * 0.72, H * 0.3, 20, 0, Math.PI * 2);
     ctx.fill();
-  } else if (kind === 2) {
+  } else {
     const colors = ['#2e3d36', '#c0583a', '#d9a35b', '#8ea394'];
     colors.forEach((col, i) => {
       ctx.fillStyle = col;
       ctx.fillRect(36 + i * 48, 70 + (i % 2) * 30, 32, 120 - (i % 2) * 30);
     });
-  } else {
-    ctx.strokeStyle = '#8d5f3c';
-    ctx.lineWidth = 7;
-    ctx.beginPath();
-    ctx.arc(W * 0.5, H * 1.12, 92, Math.PI, 0);
-    ctx.stroke();
-    ctx.strokeStyle = '#c69c62';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(W * 0.5, H * 1.12, 70, Math.PI, 0);
-    ctx.stroke();
-    ctx.fillStyle = '#b5573b';
-    ctx.fillRect(W * 0.18, H * 0.28, W * 0.64, 5);
   }
   speckle(ctx, W, H, 1800, 0.06, 51 + kind);
   return toTexture(c);
